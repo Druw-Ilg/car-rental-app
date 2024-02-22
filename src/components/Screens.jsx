@@ -4,23 +4,24 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 
 export const Sedan = () =>{
     <View style={styles.carCards}>
-        <Text><Image></Image></Text>
+        <Text><Image>Sedan Cars</Image></Text>
     </View>
 }
 
 export const SUV = () =>{
     <View style={styles.carCards}>
         <Text>
-            <Image></Image>
+            <Image>SUV Cars</Image>
         </Text>
     </View>
 }
 
 export const Auth = () =>{
     <View>
-        <Text></Text>
+        <Text>Se connecter/S&apos;inscrire</Text>
     </View>
 }
+
 
 const styles = StyleSheet.create({
 
