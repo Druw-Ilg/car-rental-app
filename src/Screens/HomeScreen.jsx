@@ -7,12 +7,13 @@ import {
 	Text,
 	StyleSheet,
 	Image,
-  ScrollView,
+	ScrollView,
 	StatusBar
 } from 'react-native';
 import { Searchbar, Card, Title } from 'react-native-paper';
-import Header from './Header';
+import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import CARS from '../components/Cars';
 
 const CustomSearchIcon = () => (
 	<View style={{ marginRight: 10 }}>
@@ -20,33 +21,33 @@ const CustomSearchIcon = () => (
 	</View>
 );
 
-const CARS = [
-	{
-		brandTitle: 'Toyota Camry 2020',
-		cover: require('../../assets/cars/blue-toyota-camry.jpg'),
-		details:
-			'À la fois flashy et pratique, la nouvelle Toyota Camry 2020 fait les gros titres.'
-	},
-	{
-		brandTitle: 'PORSCHE CAYENNE TURBO GT 2023',
-		cover: require('../../assets/cars/PORSCHE_CAYENNE_TURBO_GT_2023.png'),
-		details:
-			'Unleash the King of the Dunes: Rent a 2023 Porsche Cayenne Turbo GT and ...'
-	},
-	{
-		brandTitle: 'BMW M4 2022',
-		cover: require('../../assets/cars/BMW_M4_2022.png'),
-		details:
-			'2022 BMW M4, sculpted from a symphony of sleek lines and Bavarian engineering,...'
-	}
-];
-
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
 	const RenderCars = (props) => {
 		const { brandTitle, cover, details } = props;
 
+		// Limit car details to maximum 20 words
+		const renderDetails = (details) => {
+			// Split the details into words
+			const words = details.split(' ');
+			// If the number of words exceeds 15, truncate and append ellipsis
+			if (words.length > 15) {
+				return words.slice(0, 15).join(' ') + '...';
+			} else {
+				return details + '...';
+			}
+		};
+
 		return (
-			<Card style={styles.contentCardWrapper}>
+			<Card
+				style={styles.contentCardWrapper}
+				onPress={() =>
+					navigation.navigate('Car', {
+						brandTitle: brandTitle,
+						cover: cover,
+						details: details
+					})
+				}
+			>
 				<Card.Content style={styles.contentCardsContainer}>
 					<Image source={cover} style={styles.contentCardsCover} />
 					<View style={styles.contentCardDetails}>
@@ -54,8 +55,9 @@ const HomeScreen = () => {
 							{brandTitle}
 						</Title>
 						<Text variant="bodyMedium" style={{ fontSize: 14 }}>
-							{details}
+							{renderDetails(details)}
 						</Text>
+
 						<Icon name="arrow-right" size={40} color="#000" />
 					</View>
 				</Card.Content>
@@ -64,74 +66,76 @@ const HomeScreen = () => {
         </Card.Actions> */}
 			</Card>
 		);
-   
 	};
 
 	return (
 		<SafeAreaView style={styles.container}>
-      <ScrollView>
-			<View style={styles.blueWrapper}>
-				<Header />
+			<ScrollView>
+				<View style={styles.blueWrapper}>
+					<Header navigation={navigation} />
 
-				<Searchbar
-					style={styles.searchBar}
-					placeholder="Une marque ou un concessionnaire"
-					placeholderTextColor="#fff"
-					inputStyle={{ color: 'white' }}
-					icon={() => <CustomSearchIcon />}
-				/>
-
-				{/* Welcome text */}
-				<Text style={styles.headerText}>
-					Louer un véhicule n&apos;a jamais été aussi facile.
-				</Text>
-
-				{/* Cards at the bottom */}
-				<View style={styles.imgBoxHeaderWrapper}>
-					<Card style={styles.imgCardHeader}>
-						<Card.Content>
-							<Image
-								// eslint-disable-next-line no-undef
-								source={require('../../assets/blue-sedan.jpg')}
-								style={styles.cardImageHeader}
-							/>
-							<Title style={styles.carTypes}>Sedan</Title>
-						</Card.Content>
-					</Card>
-
-					<Card style={styles.imgCardHeader}>
-						<Card.Content>
-							<Image
-								// eslint-disable-next-line no-undef
-								source={require('../../assets/blue-suv.jpg')}
-								style={styles.cardImageHeader}
-							/>
-							<Title style={styles.carTypes}>SUV</Title>
-						</Card.Content>
-					</Card>
-				</View>
-			</View>
-
-			<View style={styles.sectionPopulaire}>
-				<View style={styles.sectionPopulaireTitles}>
-					<Title style={styles.titleSection}>Populaire</Title>
-					<Title style={styles.subTitleSection}>Tout voir</Title>
-				</View>
-			</View>
-      <View>
-        {CARS.map((car)=>(
-          <RenderCars
-            key={car.brandTitle}
-						brandTitle={car.brandTitle}
-						cover={car.cover}
-						details={car.details}
+					<Searchbar
+						style={styles.searchBar}
+						placeholder="Une marque ou un concessionnaire"
+						placeholderTextColor="#fff"
+						inputStyle={{ color: 'white' }}
+						icon={() => <CustomSearchIcon />}
 					/>
-          
-        ))}
-        
-      </View>
-			
-    </ScrollView>
+
+					{/* Welcome text */}
+					<Text style={styles.headerText}>
+						Louer un véhicule n&apos;a jamais été aussi facile.
+					</Text>
+
+					{/* Cards at the bottom */}
+					<View style={styles.imgBoxHeaderWrapper}>
+						<Card
+							style={styles.imgCardHeader}
+							onPress={() => navigation.navigate('Sedan')}
+						>
+							<Card.Content>
+								<Image
+									// eslint-disable-next-line no-undef
+									source={require('../../assets/blue-sedan.jpg')}
+									style={styles.cardImageHeader}
+								/>
+								<Title style={styles.carTypes}>Sedan</Title>
+							</Card.Content>
+						</Card>
+
+						<Card
+							style={styles.imgCardHeader}
+							onPress={() => navigation.navigate('SUV')}
+						>
+							<Card.Content>
+								<Image
+									// eslint-disable-next-line no-undef
+									source={require('../../assets/blue-suv.jpg')}
+									style={styles.cardImageHeader}
+								/>
+								<Title style={styles.carTypes}>SUV</Title>
+							</Card.Content>
+						</Card>
+					</View>
+				</View>
+
+				<View style={styles.sectionPopulaire}>
+					<View style={styles.sectionPopulaireTitles}>
+						<Title style={styles.titleSection}>Populaire</Title>
+						<Title style={styles.subTitleSection}>Tout voir</Title>
+					</View>
+				</View>
+				<View>
+					{CARS.map((car) => (
+						<RenderCars
+							key={car.brandTitle}
+							brandTitle={car.brandTitle}
+							cover={car.cover}
+							details={car.details}
+						/>
+					))}
+				</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
@@ -219,6 +223,5 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	}
 });
-
 
 export default HomeScreen;

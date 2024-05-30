@@ -1,39 +1,54 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const CustomDrawerContent = (props) => {
-  return (
-    <View style={styles.container}>
-      {/* Close button */}
-      <TouchableOpacity style={styles.closeButton} onPress={() => props.navigation.closeDrawer()}>
-        <Icon name="close" size={30} color="#000" />
-      </TouchableOpacity>
-
-      {/* Drawer content */}
-      <DrawerContentScrollView {...props}>
-        <DrawerItemList {...props} />
-        {/* Add additional items as needed */}
-      </DrawerContentScrollView>
-    </View>
-  );
+const CustomDrawerContent = ({ navigation }) => {
+	const handleLinkPress = (screenName) => {
+		navigation.navigate(screenName);
+	};
+	return (
+		<View style={styles.container}>
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('Connexion')}
+			>
+				<Text style={styles.linkText}>
+					<Icon name="login" size={30} color="#000" /> Se connecter
+				</Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('SUV')}
+			>
+				<Text style={styles.linkText}>
+					<Icon name="cog" size={30} color="#000" />
+					SUV
+				</Text>
+			</TouchableOpacity>
+			{/* Add more links as needed */}
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay color
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-  },
+	container: {
+		flex: 1,
+		paddingTop: 50,
+		paddingHorizontal: 10
+	},
+	link: {
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		marginVertical: 5,
+		borderRadius: 5
+	},
+	linkText: {
+		color: '#000',
+		fontSize: 22
+	}
 });
-
-
 
 export default CustomDrawerContent;
