@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,26 +8,47 @@ import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
 import CarDetailsScreen from './src/Screens/CarDetailsScreen';
 import SignUpScreen from './src/Screens/SignUpScreen';
+import VendorScreen from './src/Screens/VendorScreen';
+
 import CustomDrawerContent from './src/components/CustomDrawerContent';
+import { AuthProvider, AuthContext } from './src/utils/AuthContext';
+import VendorDrawerContent from './src/components/VendorDrawerContent';
+import UserDrawerContent from './src/components/UserDrawerContent';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const App = () => {
 	return (
-		<>
+		<AuthProvider>
 			<NavigationContainer>
-				<Drawer.Navigator
-					drawerContent={(props) => <CustomDrawerContent {...props} />}
-				>
-					<Drawer.Screen
-						name="HomeDrawer"
-						component={HomeDrawer}
-						options={{ headerShown: false }}
-					/>
-				</Drawer.Navigator>
+				<MainStack />
 			</NavigationContainer>
-		</>
+		</AuthProvider>
+	);
+};
+
+// identify the menu to display when users are loged in or not
+const MainStack = () => {
+	const { userData } = useContext(AuthContext);
+	return (
+		<Drawer.Navigator
+			drawerContent={(props) =>
+				userData && userData.isVendor ? (
+					<VendorDrawerContent {...props} />
+				) : userData && !userData.isVendor ? (
+					<UserDrawerContent {...props} />
+				) : (
+					<CustomDrawerContent {...props} />
+				)
+			}
+		>
+			<Drawer.Screen
+				name="HomeDrawer"
+				component={HomeDrawer}
+				options={{ headerShown: false }}
+			/>
+		</Drawer.Navigator>
 	);
 };
 
@@ -44,6 +65,7 @@ const HomeDrawer = () => {
 			<Stack.Screen name="Sedan" component={SedanScreen} />
 			<Stack.Screen name="Car" component={CarDetailsScreen} />
 			<Stack.Screen name="Connexion" component={SignUpScreen} />
+			<Stack.Screen name="VendorScreen" component={VendorScreen} />
 		</Stack.Navigator>
 	);
 };

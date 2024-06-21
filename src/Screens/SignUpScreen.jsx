@@ -1,16 +1,18 @@
 /* eslint-disable react/prop-types */
 
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
 	View,
 	Text,
 	TextInput,
-	Button,
 	StyleSheet,
-	TouchableOpacity
+	TouchableOpacity,
+	ActivityIndicator
 } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../utils/firebase/firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../firebase/firebaseConfig';
+import { addDoc, collection } from 'firebase/firestore';
+import { AuthContext } from '../utils/AuthContext';
 
 const SignUpScreen = ({ navigation }) => {
 	const [isMember, setIsMember] = useState(true);
@@ -19,46 +21,75 @@ const SignUpScreen = ({ navigation }) => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [isVendor, setIsVendor] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const [loading, setLoading] = useState(false);
+	const { login } = useContext(AuthContext);
 
-	//if he/she is a member
-	const handleLogin = async () => {
-		// Perform login logic based on form input
-		const userCredential = await signInWithEmailAndPassword(
-			auth,
-			email,
-			password
-		);
-
-		console.log(userCredential);
-		// Reset form fields after sign-up
-		// setEmail('');
-		// setPassword('');
+	const validateForm = () => {
+		if (!name || !email || !password) {
+			return 'Le nom, email, et mot de passe sont requis.';
+		}
+		if (isVendor && !phoneNumber) {
+			return 'Le numéro de téléphone est requis pour les loueurs.';
+		}
+		return null;
 	};
 
-	// if not a member
+	const handleLogin = async () => {
+		setLoading(true);
+
+		// Perform login logic based on form input
+		try {
+			const log = await login(email, password, navigation);
+			log == undefined && setErrorMessage('Email ou mot de passe incorrect!');
+		} catch (error) {
+			setErrorMessage('Erreur: ' + error);
+		} finally {
+			setLoading(false); // Hide loader
+		}
+	};
+
 	const handleSignUp = async () => {
+		const validationError = validateForm();
+		if (validationError) {
+			setErrorMessage(validationError);
+			return;
+		}
+		setLoading(true);
+
 		try {
 			// Perform sign-up logic based on form input and selected account type
 
-			const user = { name, phoneNumber, email, isVendor };
+			await createUserWithEmailAndPassword(auth, email, password);
 
-			// Save user session using AsyncStorage
+			const user = await addDoc(collection(db, 'users'), {
+				name,
+				email,
+				phoneNumber,
+				password,
+				isVendor
+			});
 
-			// Log in the user
+			if (user.id) {
+				console.log(user.id);
 
-			// Reset form fields after sign-up
-			setName('');
-			setPhoneNumber('');
-			setEmail('');
-			setPassword('');
+				// empty form's fields
+				setName('');
+				setPhoneNumber('');
+				setEmail('');
+				setPassword('');
 
-			console.log(user);
-
-			// Navigate to Home
-			navigation.navigate('HomeDrawer');
+				const log = await login(email, password, navigation);
+				typeof log == String && setErrorMessage(log);
+			}
 		} catch (error) {
 			console.error(error);
-			alert('Failed to regiter');
+			setErrorMessage(
+				'Une erreur est survenue lors de votre inscription: ',
+				error
+			);
+		} finally {
+			setLoading(false); // Hide loader
 		}
 	};
 
@@ -68,11 +99,16 @@ const SignUpScreen = ({ navigation }) => {
 				<View style={styles.container}>
 					<Text style={styles.title}>Se connecter</Text>
 
+					{errorMessage ? (
+						<Text style={styles.error}>{errorMessage}</Text>
+					) : null}
+
 					<TextInput
 						style={styles.input}
 						placeholder="Email"
 						keyboardType="email-address"
 						value={email}
+						required
 						onChangeText={setEmail}
 					/>
 					<TextInput
@@ -80,13 +116,27 @@ const SignUpScreen = ({ navigation }) => {
 						placeholder="Password"
 						secureTextEntry
 						value={password}
+						required
 						onChangeText={setPassword}
 					/>
 
-					<Button title="Connexion" onPress={handleLogin} />
+					{loading ? (
+						<ActivityIndicator
+							size="large"
+							color="#0000ff"
+							style={styles.loader}
+						/>
+					) : (
+						<TouchableOpacity onPress={handleLogin} style={styles.formBtn}>
+							<Text style={styles.txtFormBtn}>Connexion</Text>
+						</TouchableOpacity>
+					)}
 
 					<TouchableOpacity
-						onPress={() => setIsMember(!isMember)}
+						onPress={() => {
+							setErrorMessage('');
+							setIsMember(!isMember);
+						}}
 						style={styles.accountTypeButton}
 					>
 						<Text style={styles.accountTypeButtonText}>
@@ -97,6 +147,11 @@ const SignUpScreen = ({ navigation }) => {
 			) : (
 				<View style={[!isVendor ? styles.container : styles.vendorContainer]}>
 					<Text style={styles.title}>S&apos;inscrire</Text>
+
+					{errorMessage ? (
+						<Text style={styles.error}>{errorMessage}</Text>
+					) : null}
+
 					<TextInput
 						style={styles.input}
 						placeholder="Name/Company Name"
@@ -134,9 +189,23 @@ const SignUpScreen = ({ navigation }) => {
 								: 'Switch to Vendor Account'}
 						</Text>
 					</TouchableOpacity>
-					<Button title="S'inscrire" onPress={handleSignUp} />
+					{loading ? (
+						<ActivityIndicator
+							size="large"
+							color="#0000ff"
+							style={styles.loader}
+						/>
+					) : (
+						<TouchableOpacity onPress={handleSignUp} style={styles.formBtn}>
+							<Text style={styles.txtFormBtn}>S&apos;inscrire</Text>
+						</TouchableOpacity>
+					)}
+
 					<TouchableOpacity
-						onPress={() => setIsMember(!isMember)}
+						onPress={() => {
+							setErrorMessage('');
+							setIsMember(!isMember);
+						}}
 						style={styles.accountTypeButton}
 					>
 						<Text style={styles.accountTypeButtonText}>
@@ -160,11 +229,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingHorizontal: 20,
-		backgroundColor: 'rgb(40 52 74)'
+		paddingHorizontal: 20
 	},
 	title: {
-		fontSize: 24,
+		fontSize: 34,
 		fontWeight: 'bold',
 		marginBottom: 20
 	},
@@ -173,16 +241,37 @@ const styles = StyleSheet.create({
 		height: 40,
 		borderWidth: 1,
 		borderColor: '#ccc',
-		borderRadius: 5,
+		borderRadius: 12,
 		paddingHorizontal: 10,
-		marginBottom: 10
+		marginBottom: 10,
+		fontSize: 18
 	},
 	accountTypeButton: {
 		alignSelf: 'flex-start',
-		marginBottom: 20
+		marginVertical: 20
 	},
 	accountTypeButtonText: {
-		color: 'blue'
+		color: 'blue',
+		fontSize: 18
+	},
+	formBtn: {
+		backgroundColor: 'rgb(40 52 74)',
+		width: '100%',
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		marginTop: 20,
+		fontWeight: 'bold'
+	},
+	txtFormBtn: {
+		color: '#fff',
+		fontSize: 18,
+		textAlign: 'center'
+	},
+	error: {
+		color: 'red',
+		marginVertical: 10,
+		fontSize: 15
 	}
 });
 

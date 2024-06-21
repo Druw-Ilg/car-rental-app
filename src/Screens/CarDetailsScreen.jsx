@@ -12,7 +12,7 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 			<Image source={cover} style={styles.cover} />
 			<Title style={styles.title}>{brandTitle}</Title>
 			<Text style={styles.details}>{details + '.'}</Text>
-			<Button title="Contacter" onPress={() => navigation.navigate('SignUp')} />
+			<Button title="Contacter" onPress={() => navigation.navigate('Home')} />
 		</View>
 	);
 };
