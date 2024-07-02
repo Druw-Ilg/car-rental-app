@@ -10,16 +10,17 @@ import {
 } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { FIREBASE_API_KEY, FIREBASE_APP_ID } from '@env';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: 'AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY',
+	apiKey: FIREBASE_API_KEY,
 	authDomain: 'car-rental-backend01.firebaseapp.com',
 	projectId: 'car-rental-backend01',
 	storageBucket: 'car-rental-backend01.appspot.com',
 	messagingSenderId: '630901504141',
-	appId: '1:630901504141:web:36fc931b88ab779dc58ac4'
+	appId: FIREBASE_APP_ID
 };
 
 // Initialize Firebase
@@ -37,6 +38,11 @@ connectAuthEmulator(auth, 'http://10.0.2.2:9099/');
 export const db = __DEV__ && getFirestore();
 // connect to emulator for dev purposes
 connectFirestoreEmulator(db, '10.0.2.2', 8080);
+
+// Initialize cloud storage
+export const storage = __DEV__ && getStorage();
+// Point to the Storage emulator running on localhost.
+connectStorageEmulator(storage, '10.0.2.2', 9199);
 
 /*
  *	Put firebase info back after development stage:

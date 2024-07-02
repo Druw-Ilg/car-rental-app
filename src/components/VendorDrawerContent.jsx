@@ -10,6 +10,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as SecureStore from 'expo-secure-store';
+import CustomDrawerContent from './CustomDrawerContent';
 
 const VendorMenu = ({ name, navigation, handleLinkPress }) => {
 	const { logout } = useContext(AuthContext);
@@ -18,10 +19,19 @@ const VendorMenu = ({ name, navigation, handleLinkPress }) => {
 		<>
 			<TouchableOpacity
 				style={styles.link}
-				onPress={() => handleLinkPress('VendorScreen')}
+				onPress={() => handleLinkPress('Profile Loueur')}
 			>
 				<Text style={styles.linkText}>
 					<AntIcon name="user" size={30} color="#000" /> {name}
+				</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('Tableau de bord')}
+			>
+				<Text style={styles.linkText}>
+					<AntIcon name="dashboard" size={30} color="#000" /> Tableau de bord
 				</Text>
 			</TouchableOpacity>
 
@@ -69,25 +79,9 @@ const VendorDrawerContent = ({ navigation }) => {
 					handleLinkPress={handleLinkPress}
 				/>
 			) : (
-				<TouchableOpacity
-					style={styles.link}
-					onPress={() => handleLinkPress('Connexion')}
-				>
-					<Text style={styles.linkText}>
-						<Icon name="login" size={30} color="#000" /> Se connecter
-					</Text>
-				</TouchableOpacity>
+				<CustomDrawerContent />
 			)}
 
-			<TouchableOpacity
-				style={styles.link}
-				onPress={() => handleLinkPress('SUV')}
-			>
-				<Text style={styles.linkText}>
-					<Icon name="cog" size={30} color="#000" />
-					SUV
-				</Text>
-			</TouchableOpacity>
 			{/* Add more links as needed */}
 		</View>
 	);

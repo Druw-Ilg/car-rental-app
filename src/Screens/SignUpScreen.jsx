@@ -7,7 +7,8 @@ import {
 	TextInput,
 	StyleSheet,
 	TouchableOpacity,
-	ActivityIndicator
+	ActivityIndicator,
+	Switch
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase/firebaseConfig';
@@ -24,6 +25,8 @@ const SignUpScreen = ({ navigation }) => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(false);
 	const { login } = useContext(AuthContext);
+
+	const toggleSwitch = () => setIsVendor((previousState) => !previousState);
 
 	const validateForm = () => {
 		if (!name || !email || !password) {
@@ -71,8 +74,6 @@ const SignUpScreen = ({ navigation }) => {
 			});
 
 			if (user.id) {
-				console.log(user.id);
-
 				// empty form's fields
 				setName('');
 				setPhoneNumber('');
@@ -183,11 +184,21 @@ const SignUpScreen = ({ navigation }) => {
 						onPress={() => setIsVendor(!isVendor)}
 						style={styles.accountTypeButton}
 					>
-						<Text style={styles.accountTypeButtonText}>
-							{isVendor
-								? 'Switch to Member Account'
-								: 'Switch to Vendor Account'}
-						</Text>
+						<View
+							style={{
+								flexDirection: 'row-reverse',
+								alignItems: 'center'
+							}}
+						>
+							<Switch
+								trackColor={{ false: '#767577', true: '#28344A' }}
+								thumbColor={isVendor ? 'blue' : '#f4f3f4'}
+								ios_backgroundColor="#3e3e3e"
+								onValueChange={toggleSwitch}
+								value={isVendor}
+							/>
+							<Text style={{ color: '#000', fontSize: 18 }}>Loueur</Text>
+						</View>
 					</TouchableOpacity>
 					{loading ? (
 						<ActivityIndicator

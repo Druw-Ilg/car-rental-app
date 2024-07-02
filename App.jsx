@@ -8,12 +8,13 @@ import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
 import CarDetailsScreen from './src/Screens/CarDetailsScreen';
 import SignUpScreen from './src/Screens/SignUpScreen';
-import VendorScreen from './src/Screens/VendorScreen';
+import VendorDashboard from './src/Screens/vendor/VendorDashboard';
 
 import CustomDrawerContent from './src/components/CustomDrawerContent';
 import { AuthProvider, AuthContext } from './src/utils/AuthContext';
 import VendorDrawerContent from './src/components/VendorDrawerContent';
 import UserDrawerContent from './src/components/UserDrawerContent';
+import VendorProfileScreen from './src/Screens/vendor/VendorProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -63,9 +64,14 @@ const HomeDrawer = () => {
 
 			<Stack.Screen name="SUV" component={SUVScreen} />
 			<Stack.Screen name="Sedan" component={SedanScreen} />
-			<Stack.Screen name="Car" component={CarDetailsScreen} />
+			<Stack.Screen
+				name="CarDetails"
+				component={CarDetailsScreen}
+				options={{ title: '' }}
+			/>
 			<Stack.Screen name="Connexion" component={SignUpScreen} />
-			<Stack.Screen name="VendorScreen" component={VendorScreen} />
+			<Stack.Screen name="Tableau de bord" component={VendorDashboard} />
+			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
 		</Stack.Navigator>
 	);
 };

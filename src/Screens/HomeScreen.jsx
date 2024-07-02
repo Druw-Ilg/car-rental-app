@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	SafeAreaView,
 	View,
@@ -13,7 +13,8 @@ import {
 import { Searchbar, Card, Title } from 'react-native-paper';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import CARS from '../components/Cars';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 const CustomSearchIcon = () => (
 	<View style={{ marginRight: 10 }}>
@@ -22,48 +23,68 @@ const CustomSearchIcon = () => (
 );
 
 const HomeScreen = ({ navigation }) => {
-	const RenderCars = (props) => {
-		const { brandTitle, cover, details } = props;
+	const [vehicles, setVehicles] = useState([]);
 
-		// Limit car details to maximum 20 words
-		const renderDetails = (details) => {
-			// Split the details into words
-			const words = details.split(' ');
-			// If the number of words exceeds 15, truncate and append ellipsis
-			if (words.length > 15) {
-				return words.slice(0, 15).join(' ') + '...';
-			} else {
-				return details + '...';
+	useEffect(() => {
+		const fetchVehicles = async () => {
+			const querySnapshot = await getDocs(collection(db, 'vehicles'));
+			if (querySnapshot.docs.length > 0) {
+				try {
+					querySnapshot.docs.forEach((doc) =>
+						setVehicles([
+							{
+								id: doc.id,
+								...doc.data()
+							}
+						])
+					);
+				} catch (error) {
+					console.error(console.error());
+				}
 			}
 		};
+
+		fetchVehicles();
+	}, []);
+
+	const RenderCars = ({ item }) => {
+		// Limit car details to maximum 20 words
+		// const renderDetails = (details) => {
+		// 	// Split the details into words
+		// 	const words = details.split(' ');
+		// 	// If the number of words exceeds 15, truncate and append ellipsis
+		// 	if (words.length > 15) {
+		// 		return words.slice(0, 15).join(' ') + '...';
+		// 	} else {
+		// 		return details + '...';
+		// 	}
+		// };
 
 		return (
 			<Card
 				style={styles.contentCardWrapper}
 				onPress={() =>
-					navigation.navigate('Car', {
-						brandTitle: brandTitle,
-						cover: cover,
-						details: details
+					navigation.navigate('CarDetails', {
+						vehicle: item
 					})
 				}
 			>
 				<Card.Content style={styles.contentCardsContainer}>
-					<Image source={cover} style={styles.contentCardsCover} />
+					<Image
+						source={{ uri: item.imageUrls[0] }}
+						style={styles.contentCardsCover}
+					/>
 					<View style={styles.contentCardDetails}>
-						<Title variant="titleLarge" style={{ fontWeight: 600 }}>
-							{brandTitle}
-						</Title>
-						<Text variant="bodyMedium" style={{ fontSize: 14 }}>
-							{renderDetails(details)}
+						<Text style={styles.vehicleBrand}>
+							{item.brand} {item.model} ({item.year})
 						</Text>
-
+						<Text style={styles.vehicleText}>Price: ${item.price}</Text>
+						{/* <Text numberOfLines={1} style={styles.vehicleText}>
+							Details: {item.carDetails}
+						</Text> */}
 						<Icon name="arrow-right" size={40} color="#000" />
 					</View>
 				</Card.Content>
-
-				{/* <Card.Actions>
-        </Card.Actions> */}
 			</Card>
 		);
 	};
@@ -119,20 +140,9 @@ const HomeScreen = ({ navigation }) => {
 					</View>
 				</View>
 
-				<View style={styles.sectionPopulaire}>
-					<View style={styles.sectionPopulaireTitles}>
-						<Title style={styles.titleSection}>Populaire</Title>
-						<Title style={styles.subTitleSection}>Tout voir</Title>
-					</View>
-				</View>
 				<View>
-					{CARS.map((car) => (
-						<RenderCars
-							key={car.brandTitle}
-							brandTitle={car.brandTitle}
-							cover={car.cover}
-							details={car.details}
-						/>
+					{vehicles.map((vehicle) => (
+						<RenderCars key={vehicle.id} item={vehicle} />
 					))}
 				</View>
 			</ScrollView>
@@ -188,13 +198,7 @@ const styles = StyleSheet.create({
 	carTypes: {
 		textAlign: 'center'
 	},
-	sectionPopulaire: {
-		padding: 10
-	},
-	sectionPopulaireTitles: {
-		flexDirection: 'row',
-		justifyContent: 'space-between'
-	},
+
 	titleSection: {
 		fontWeight: '800',
 		fontSize: 26,
@@ -221,6 +225,14 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		width: '40%',
 		marginLeft: 10
+	},
+	vehicleBrand: {
+		fontSize: 18,
+		fontWeight: 'bold'
+	},
+	vehicleText: {
+		fontSize: 16,
+		fontWeight: 'bold'
 	}
 });
 

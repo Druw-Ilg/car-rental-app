@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 	const [userData, setUserData] = useState(null);
 
 	useEffect(() => {
+		// refresh user
 		const loadUser = async () => {
 			try {
 				const user = await SecureStore.getItemAsync('user');
@@ -43,6 +44,7 @@ export const AuthProvider = ({ children }) => {
 
 			const querySnapshot = await getDocs(q);
 			const userInfo = querySnapshot.docs[0]?.data();
+			userInfo['uid'] = user.uid; //Add the user id
 
 			// create user session
 
@@ -52,7 +54,7 @@ export const AuthProvider = ({ children }) => {
 				navigation.navigate('Home');
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	};
 
