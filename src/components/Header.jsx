@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import * as React from 'react';
-import { TouchableOpacity, StyleSheet, View, Image } from 'react-native';
+import React from 'react';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Header = (props) => {
 	const { navigation } = props;
+
 	return (
 		<View style={styles.wrapper}>
 			<TouchableOpacity
@@ -14,10 +15,6 @@ const Header = (props) => {
 			>
 				<Icon name="menu" size={50} color="#fff" />
 			</TouchableOpacity>
-			<Image
-				source={require('../../assets/user-profile.jpg')}
-				style={styles.profile}
-			/>
 		</View>
 	);
 };
@@ -27,15 +24,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		marginTop: 30,
+		marginTop: 20,
 		padding: 10
-	},
-	profile: {
-		width: 70,
-		height: 70,
-		borderRadius: 12,
-		borderWidth: 1,
-		borderColor: 'white'
 	}
 });
 

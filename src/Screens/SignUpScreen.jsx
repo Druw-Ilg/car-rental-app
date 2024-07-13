@@ -8,7 +8,8 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	ActivityIndicator,
-	Switch
+	Switch,
+	Image
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase/firebaseConfig';
@@ -24,7 +25,7 @@ const SignUpScreen = ({ navigation }) => {
 	const [isVendor, setIsVendor] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(false);
-	const { login } = useContext(AuthContext);
+	const { login, googleSignIn } = useContext(AuthContext);
 
 	const toggleSwitch = () => setIsVendor((previousState) => !previousState);
 
@@ -94,6 +95,13 @@ const SignUpScreen = ({ navigation }) => {
 		}
 	};
 
+	//***************** Google Signin ***************//
+	const signInWithGoogle = async () => {
+		setLoading(true);
+	};
+
+	//***************** Google Signin ***************//
+
 	return (
 		<>
 			{isMember ? (
@@ -128,9 +136,26 @@ const SignUpScreen = ({ navigation }) => {
 							style={styles.loader}
 						/>
 					) : (
-						<TouchableOpacity onPress={handleLogin} style={styles.formBtn}>
-							<Text style={styles.txtFormBtn}>Connexion</Text>
-						</TouchableOpacity>
+						<>
+							<TouchableOpacity onPress={handleLogin} style={styles.formBtn}>
+								<Text style={styles.txtFormBtn}>Connexion</Text>
+							</TouchableOpacity>
+
+							{/* Google Signin */}
+							{/* <TouchableOpacity
+								onPress={() => googleSignIn(navigation)}
+								style={[
+									styles.formBtn,
+									{ flexDirection: 'row', justifyContent: 'center' }
+								]}
+							>
+								<Text style={styles.txtFormBtn}>Connexion avec Google</Text>
+								<Image
+									source={require('../images/google.png')}
+									style={{ width: 25, height: 25, marginHorizontal: 10 }}
+								/>
+							</TouchableOpacity> */}
+						</>
 					)}
 
 					<TouchableOpacity
@@ -155,27 +180,27 @@ const SignUpScreen = ({ navigation }) => {
 
 					<TextInput
 						style={styles.input}
-						placeholder="Name/Company Name"
+						placeholder="Nom/Compagnie* "
 						value={name}
 						onChangeText={setName}
 					/>
 					<TextInput
 						style={styles.input}
-						placeholder="Phone Number"
+						placeholder="Téléphone"
 						keyboardType="phone-pad"
 						value={phoneNumber}
 						onChangeText={setPhoneNumber}
 					/>
 					<TextInput
 						style={styles.input}
-						placeholder="Email"
-						keyboardType="email-address"
+						placeholder="Email*"
+						keyboardType="email-address*"
 						value={email}
 						onChangeText={setEmail}
 					/>
 					<TextInput
 						style={styles.input}
-						placeholder="Password"
+						placeholder="Mot de passe*"
 						secureTextEntry
 						value={password}
 						onChangeText={setPassword}

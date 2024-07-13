@@ -24,28 +24,40 @@ const CustomSearchIcon = () => (
 
 const HomeScreen = ({ navigation }) => {
 	const [vehicles, setVehicles] = useState([]);
+	const [filteredVehicles, setFilteredVehicles] = useState([]);
+	const [search, setSearch] = useState('');
+
+	const fetchVehicles = async () => {
+		const querySnapshot = await getDocs(collection(db, 'vehicles'));
+		if (querySnapshot.docs.length > 0) {
+			try {
+				const fetchedVehicles = querySnapshot.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data()
+				}));
+				setVehicles(fetchedVehicles);
+				// setFilteredVehicles(fetchedVehicles);
+			} catch (error) {
+				console.error(console.error());
+			}
+		}
+	};
 
 	useEffect(() => {
-		const fetchVehicles = async () => {
-			const querySnapshot = await getDocs(collection(db, 'vehicles'));
-			if (querySnapshot.docs.length > 0) {
-				try {
-					querySnapshot.docs.forEach((doc) =>
-						setVehicles([
-							{
-								id: doc.id,
-								...doc.data()
-							}
-						])
-					);
-				} catch (error) {
-					console.error(console.error());
-				}
-			}
-		};
-
 		fetchVehicles();
+		const intervalId = setInterval(fetchVehicles, 30000); // Fetch every 30 seconds
+
+		return () => clearInterval(intervalId); // Clear interval on unmount
 	}, []);
+
+	useEffect(() => {
+		const filtered = vehicles.filter(
+			(vehicle) =>
+				vehicle.brand.toLowerCase().includes(search.toLowerCase()) ||
+				vehicle.model.toLowerCase().includes(search.toLowerCase())
+		);
+		setFilteredVehicles(filtered);
+	}, [search, vehicles]);
 
 	const RenderCars = ({ item }) => {
 		// Limit car details to maximum 20 words
@@ -78,7 +90,7 @@ const HomeScreen = ({ navigation }) => {
 						<Text style={styles.vehicleBrand}>
 							{item.brand} {item.model} ({item.year})
 						</Text>
-						<Text style={styles.vehicleText}>Price: ${item.price}</Text>
+						<Text style={styles.vehicleText}>{item.price} CFA/Jour</Text>
 						{/* <Text numberOfLines={1} style={styles.vehicleText}>
 							Details: {item.carDetails}
 						</Text> */}
@@ -97,7 +109,9 @@ const HomeScreen = ({ navigation }) => {
 
 					<Searchbar
 						style={styles.searchBar}
-						placeholder="Une marque ou un concessionnaire"
+						placeholder="Une marque ou un modèle de véhicule.."
+						onChangeText={setSearch}
+						value={search}
 						placeholderTextColor="#fff"
 						inputStyle={{ color: 'white' }}
 						icon={() => <CustomSearchIcon />}
@@ -120,7 +134,7 @@ const HomeScreen = ({ navigation }) => {
 									source={require('../../assets/blue-sedan.jpg')}
 									style={styles.cardImageHeader}
 								/>
-								<Title style={styles.carTypes}>Sedan</Title>
+								<Title style={styles.carTypes}>Berline/Sedan</Title>
 							</Card.Content>
 						</Card>
 
@@ -134,16 +148,20 @@ const HomeScreen = ({ navigation }) => {
 									source={require('../../assets/blue-suv.jpg')}
 									style={styles.cardImageHeader}
 								/>
-								<Title style={styles.carTypes}>SUV</Title>
+								<Title style={styles.carTypes}>Cross/SUV</Title>
 							</Card.Content>
 						</Card>
 					</View>
 				</View>
 
 				<View>
-					{vehicles.map((vehicle) => (
-						<RenderCars key={vehicle.id} item={vehicle} />
-					))}
+					{filteredVehicles.length > 0
+						? filteredVehicles.map((vehicle) => (
+								<RenderCars key={vehicle.id} item={vehicle} />
+							))
+						: vehicles.map((vehicle) => (
+								<RenderCars key={vehicle.id} item={vehicle} />
+							))}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -162,25 +180,25 @@ const styles = StyleSheet.create({
 	},
 
 	searchBar: {
-		width: '80%',
+		width: '90%',
 		backgroundColor: 'transparent',
-		marginTop: 30,
+		marginTop: 20,
 		marginBottom: 30,
 		borderColor: '#f2f2f3',
 		borderBottomWidth: 1,
-		borderRadius: 0,
+		borderRadius: 32,
 		opacity: 0.6
 	},
 	headerText: {
 		color: '#f3f3f3',
-		fontSize: 30,
+		fontSize: 27,
 		textAlign: 'center'
 	},
 	imgBoxHeaderWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		width: '100%',
-		marginTop: 80,
+		marginTop: 40,
 		marginBottom: -70
 	},
 	imgCardHeader: {

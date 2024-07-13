@@ -1,56 +1,92 @@
 /* eslint-disable react/prop-types */
 // SedanScreen
-import React from 'react';
-import { View, Text, Image, StyleSheet, StatusBar } from 'react-native';
+
+import React, { useState, useEffect } from 'react';
+import {
+	View,
+	Text,
+	Image,
+	StyleSheet,
+	StatusBar,
+	ScrollView
+} from 'react-native';
 import { Card, Title } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import CARS from '../components/Cars';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 const SedanScreen = ({ navigation }) => {
-	const RenderCars = (props) => {
-		const { brandTitle, cover, details } = props;
+	const [vehicles, setVehicles] = useState([]);
+
+	useEffect(() => {
+		const fetchVehicles = async () => {
+			const querySnapshot = await getDocs(collection(db, 'vehicles'));
+			if (querySnapshot.docs.length > 0) {
+				try {
+					const fetchedVehicles = querySnapshot.docs.map((doc) => ({
+						id: doc.id,
+						...doc.data()
+					}));
+					const SUVs = fetchedVehicles.filter(
+						(vehicle) => vehicle.type === 'Berline/Sedan'
+					);
+					setVehicles(SUVs);
+					// setFilteredVehicles(fetchedVehicles);
+				} catch (error) {
+					console.error(console.error());
+				}
+			}
+		};
+
+		fetchVehicles();
+	}, []);
+	const RenderCars = ({ item }) => {
+		// Limit car details to maximum 20 words
+		// const renderDetails = (details) => {
+		// 	// Split the details into words
+		// 	const words = details.split(' ');
+		// 	// If the number of words exceeds 15, truncate and append ellipsis
+		// 	if (words.length > 15) {
+		// 		return words.slice(0, 15).join(' ') + '...';
+		// 	} else {
+		// 		return details + '...';
+		// 	}
+		// };
 
 		return (
 			<Card
 				style={styles.contentCardWrapper}
 				onPress={() =>
-					navigation.navigate('Car', {
-						brandTitle: brandTitle,
-						cover: cover,
-						details: details
+					navigation.navigate('CarDetails', {
+						vehicle: item
 					})
 				}
 			>
 				<Card.Content style={styles.contentCardsContainer}>
-					<Image source={cover} style={styles.contentCardsCover} />
+					<Image
+						source={{ uri: item.imageUrls[0] }}
+						style={styles.contentCardsCover}
+					/>
 					<View style={styles.contentCardDetails}>
-						<Title variant="titleLarge" style={{ fontWeight: 600 }}>
-							{brandTitle}
-						</Title>
-						<Text variant="bodyMedium" style={{ fontSize: 14 }}>
-							{details}
+						<Text style={styles.vehicleBrand}>
+							{item.brand} {item.model} {item.year}
 						</Text>
-
-						<Icon name="arrow-right" size={40} color="#000" />
+						<Text style={styles.vehicleText}>{item.price} CFA/Jour</Text>
+						{/* <Text numberOfLines={1} style={styles.vehicleText}>
+							Details: {item.carDetails}
+						</Text> */}
 					</View>
 				</Card.Content>
 			</Card>
 		);
 	};
 	return (
-		<View>
-			<View>
-				{CARS.filter((car) => car.type === 'Sedan').map((sedans) => (
-					<RenderCars
-						key={sedans.brandTitle}
-						brandTitle={sedans.brandTitle}
-						cover={sedans.cover}
-						details={sedans.details}
-					/>
-				))}
-			</View>
-		</View>
+		<ScrollView>
+			{vehicles.map((vehicle) => (
+				<RenderCars key={vehicle.id} item={vehicle} />
+			))}
+		</ScrollView>
 	);
 };
 
@@ -124,17 +160,24 @@ const styles = StyleSheet.create({
 		marginVertical: 20
 	},
 	contentCardsContainer: {
-		width: '100%',
-		flexDirection: 'row'
+		width: '100%'
 	},
 	contentCardsCover: {
-		width: '60%',
-		height: 150
+		height: 300,
+		borderRadius: 6
 	},
 	contentCardDetails: {
 		justifyContent: 'space-around',
 		width: '40%',
 		marginLeft: 10
+	},
+	vehicleBrand: {
+		fontSize: 18,
+		fontWeight: 'bold'
+	},
+	vehicleText: {
+		fontSize: 16,
+		fontWeight: 'bold'
 	}
 });
 

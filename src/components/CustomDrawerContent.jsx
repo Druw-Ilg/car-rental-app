@@ -22,15 +22,6 @@ const CustomDrawerContent = ({ navigation }) => {
 				</Text>
 			</TouchableOpacity>
 
-			<TouchableOpacity
-				style={styles.link}
-				onPress={() => handleLinkPress('SUV')}
-			>
-				<Text style={styles.linkText}>
-					<Icon name="cog" size={30} color="#000" />
-					SUV
-				</Text>
-			</TouchableOpacity>
 			{/* Add more links as needed */}
 		</View>
 	);

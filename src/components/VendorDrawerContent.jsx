@@ -3,27 +3,62 @@
 // Vendor drawer Content
 
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import { db } from '../../firebase/firebaseConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 import { AuthContext } from '../utils/AuthContext';
 import * as SecureStore from 'expo-secure-store';
 import CustomDrawerContent from './CustomDrawerContent';
 
-const VendorMenu = ({ name, navigation, handleLinkPress }) => {
-	const { logout } = useContext(AuthContext);
+const VendorMenu = ({ navigation, handleLinkPress }) => {
+	const { userData, logout } = useContext(AuthContext);
+	const [avatar, setAvatar] = useState(null);
 
+	useEffect(() => {
+		fetchAvatar();
+	}, []);
+
+	const fetchAvatar = async () => {
+		if (userData) {
+			const q = query(
+				collection(db, 'avatar'),
+				where('userId', '==', userData.uid)
+			);
+			const querySnapshot = await getDocs(q);
+			if (querySnapshot.docs.length > 0) {
+				try {
+					setAvatar(querySnapshot.docs[0].data());
+				} catch (error) {
+					console.error(error);
+				}
+			}
+		}
+	};
 	return (
 		<>
 			<TouchableOpacity
 				style={styles.link}
 				onPress={() => handleLinkPress('Profile Loueur')}
 			>
-				<Text style={styles.linkText}>
-					<AntIcon name="user" size={30} color="#000" /> {name}
-				</Text>
+				{avatar ? (
+					<View style={{ flexDirection: 'row' }}>
+						<Image
+							source={{ uri: avatar.downloadUrl }}
+							style={styles.avatarImage}
+						/>
+						<Text style={[styles.linkText, { paddingTop: 17 }]}>
+							{userData.name}
+						</Text>
+					</View>
+				) : (
+					<Text style={styles.linkText}>
+						<AntIcon name="user" size={30} color="#000" /> {userData.name}
+					</Text>
+				)}
 			</TouchableOpacity>
 
 			<TouchableOpacity
@@ -46,7 +81,6 @@ const VendorMenu = ({ name, navigation, handleLinkPress }) => {
 
 const VendorDrawerContent = ({ navigation }) => {
 	const [isLogedIn, setIsLogedIn] = useState(false);
-	const [userData, setUserData] = useState({});
 
 	const handleLinkPress = (screenName) => {
 		navigation.navigate(screenName);
@@ -54,15 +88,14 @@ const VendorDrawerContent = ({ navigation }) => {
 
 	useEffect(() => {
 		async function getUserData() {
+			// get the user data from SecureStore session
 			const user = await SecureStore.getItemAsync('user');
 
 			if (user) {
-				setUserData(JSON.parse(user));
 				setIsLogedIn(true);
 			} else {
 				console.log(
-					"Couldn't log in the vendor. <br> From VendorDrawerContent l-45: ",
-					userData
+					"Couldn't log in the vendor. <br> From VendorDrawerContent l-45: "
 				);
 				setIsLogedIn(false);
 			}
@@ -73,11 +106,7 @@ const VendorDrawerContent = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			{isLogedIn ? (
-				<VendorMenu
-					name={userData.name}
-					navigation={navigation}
-					handleLinkPress={handleLinkPress}
-				/>
+				<VendorMenu navigation={navigation} handleLinkPress={handleLinkPress} />
 			) : (
 				<CustomDrawerContent />
 			)}
@@ -102,6 +131,12 @@ const styles = StyleSheet.create({
 	linkText: {
 		color: '#000',
 		fontSize: 22
+	},
+	avatarImage: {
+		width: 50,
+		height: 50,
+		borderRadius: 12,
+		marginRight: 10
 	}
 });
 

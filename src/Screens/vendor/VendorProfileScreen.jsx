@@ -3,7 +3,6 @@ import {
 	View,
 	Text,
 	TextInput,
-	Button,
 	Image,
 	StyleSheet,
 	ScrollView,
@@ -223,7 +222,9 @@ const VendorProfileScreen = () => {
 				editable={false} // email is not editable
 			/>
 			{!loading ? (
-				<Button title="Update Profile" onPress={handleUpdate} />
+				<TouchableOpacity onPress={handleUpdate} style={styles.formBtn}>
+					<Text style={styles.txtFormBtn}>Mettre à jour</Text>
+				</TouchableOpacity>
 			) : (
 				<ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
 			)}
@@ -256,8 +257,9 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: '#ccc',
 		padding: 10,
-		borderRadius: 5,
-		marginBottom: 10
+		borderRadius: 12,
+		marginBottom: 10,
+		fontSize: 18
 	},
 	alertMsg: {
 		textAlign: 'center',
@@ -268,6 +270,20 @@ const styles = StyleSheet.create({
 	},
 	successMessage: {
 		color: 'green'
+	},
+	formBtn: {
+		backgroundColor: 'rgb(40 52 74)',
+		width: '100%',
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		marginTop: 20,
+		fontWeight: 'bold'
+	},
+	txtFormBtn: {
+		color: '#fff',
+		fontSize: 18,
+		textAlign: 'center'
 	}
 });
 

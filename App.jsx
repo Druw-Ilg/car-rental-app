@@ -15,6 +15,7 @@ import { AuthProvider, AuthContext } from './src/utils/AuthContext';
 import VendorDrawerContent from './src/components/VendorDrawerContent';
 import UserDrawerContent from './src/components/UserDrawerContent';
 import VendorProfileScreen from './src/Screens/vendor/VendorProfileScreen';
+import UserProfileScreen from './src/Screens/vendor/UserProfileScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -72,6 +73,7 @@ const HomeDrawer = () => {
 			<Stack.Screen name="Connexion" component={SignUpScreen} />
 			<Stack.Screen name="Tableau de bord" component={VendorDashboard} />
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
+			<Stack.Screen name="Profile" component={UserProfileScreen} />
 		</Stack.Navigator>
 	);
 };
