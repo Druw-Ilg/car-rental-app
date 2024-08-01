@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
 import React, { useContext, useState } from 'react';
@@ -8,8 +9,7 @@ import {
 	StyleSheet,
 	TouchableOpacity,
 	ActivityIndicator,
-	Switch,
-	Image
+	Switch
 } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase/firebaseConfig';

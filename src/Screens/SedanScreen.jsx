@@ -10,8 +10,7 @@ import {
 	StatusBar,
 	ScrollView
 } from 'react-native';
-import { Card, Title } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Card } from 'react-native-paper';
 
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';

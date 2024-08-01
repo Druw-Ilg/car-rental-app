@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { db, storage } from '../../firebase/firebaseConfig';
 import {
 	addDoc,
