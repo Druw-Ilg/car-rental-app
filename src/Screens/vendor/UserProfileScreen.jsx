@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import {
@@ -10,7 +11,7 @@ import {
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
-import { auth, db } from '../../../firebase/firebaseConfig';
+import { db } from '../../../firebase/firebaseConfig';
 import {
 	collection,
 	getDocs,

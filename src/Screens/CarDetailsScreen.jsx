@@ -64,31 +64,33 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 	};
 	return (
 		<SafeAreaView style={styles.container}>
-			<View>
-				{<ImagesCaroussel vehicle={vehicle} />}
+			<ScrollView>
+				<View>
+					{<ImagesCaroussel vehicle={vehicle} />}
 
-				<Text style={styles.title}>
-					{vehicle.brand} {vehicle.model} ({vehicle.year})
-				</Text>
-				<Text style={[styles.detailText, styles.price]}>
-					{vehicle.price} CFA/Jours
-				</Text>
-			</View>
+					<Text style={styles.title}>
+						{vehicle.brand} {vehicle.model} ({vehicle.year})
+					</Text>
+					<Text style={[styles.detailText, styles.price]}>
+						{vehicle.price} CFA/Jours
+					</Text>
+				</View>
 
-			<TouchableOpacity
-				onPress={() => makePhoneCall()}
-				style={styles.contactBtn}
-			>
-				<FontAwesome name="phone" size={30} color="#fff" />
-			</TouchableOpacity>
-			<View>
-				<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
-				<ScrollView horizontal={true}>
-					{otherVehicles.map((otherVehicle) => (
-						<RenderOtherVehicles key={otherVehicle.id} item={otherVehicle} />
-					))}
-				</ScrollView>
-			</View>
+				<TouchableOpacity
+					onPress={() => makePhoneCall()}
+					style={styles.contactBtn}
+				>
+					<FontAwesome name="phone" size={30} color="#fff" />
+				</TouchableOpacity>
+				<View>
+					<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
+					<ScrollView horizontal={true}>
+						{otherVehicles.map((otherVehicle) => (
+							<RenderOtherVehicles key={otherVehicle.id} item={otherVehicle} />
+						))}
+					</ScrollView>
+				</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
