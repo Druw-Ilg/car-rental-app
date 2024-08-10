@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "Cotché",
-    "slug": "Cotché",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -45,7 +44,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "6ce84797-9e66-4339-9431-0e9a2c481cdf"
+        "projectId": "39396e2b-e631-48e6-8663-bd9abdbc80d9"
       }
     }
   }
