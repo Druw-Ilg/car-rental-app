@@ -13,17 +13,16 @@ import {
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { FIREBASE_API_KEY, FIREBASE_APP_ID } from '@env';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: FIREBASE_API_KEY,
-	authDomain: 'car-rental-backend01.firebaseapp.com',
-	projectId: 'car-rental-backend01',
-	storageBucket: 'car-rental-backend01.appspot.com',
-	messagingSenderId: '630901504141',
-	appId: FIREBASE_APP_ID
-};
+	apiKey: "AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY",
+	authDomain: "car-rental-backend01.firebaseapp.com",
+	databaseURL: "https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app",
+	projectId: "car-rental-backend01",
+	storageBucket: "car-rental-backend01.appspot.com",
+	messagingSenderId: "630901504141",
+	appId: "1:630901504141:web:36fc931b88ab779dc58ac4"
+  };
 
 // Initialize Firebase
 if (!firebase.apps.length) {

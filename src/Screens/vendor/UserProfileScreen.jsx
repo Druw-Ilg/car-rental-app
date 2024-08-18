@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
-import { db } from '../../../firebase/firebaseConfig';
+import { auth,db, } from '../../../firebase/firebaseConfig';
 import {
 	collection,
+	getDoc,
 	getDocs,
 	query,
 	where,
@@ -67,17 +68,37 @@ const ProfileTab = ({ user }) => {
 
 const WishlistTab = ({ user }) => {
 	const [wishlist, setWishlist] = useState([]);
+	const [vehicleDetails, setVehicleDetails] = useState([]);
 
 	useEffect(() => {
 		const fetchWishlist = async () => {
 			try {
-				const q = query(
-					collection(db, 'wishlist'),
-					where('userId', '==', user.uid)
-				);
-				const querySnapshot = await getDocs(q);
-				const fetchedWishlist = querySnapshot.docs.map((doc) => doc.data());
-				setWishlist(fetchedWishlist);
+				const user = auth.currentUser;
+				if (user) {
+					const wishlistDocRef = doc(db, 'wishlist', user.uid);
+					const wishlistDoc = await getDoc(wishlistDocRef);
+					if (wishlistDoc.exists()) {
+						const wishlistIds = wishlistDoc.data().vehicleID || [];
+						setWishlist(wishlistIds);
+
+						// Fetch the details for each vehicle in the wishlist
+						const vehiclePromises = wishlistIds.map(async (vehicleId) => {
+							const vehicleDoc = await getDoc(doc(db, 'vehicles', vehicleId));
+							if (vehicleDoc.exists()) {
+								return { id: vehicleDoc.id, ...vehicleDoc.data() };
+							}
+							return null;
+						});
+
+						// Wait for all vehicle details to be fetched
+						const vehicles = await Promise.all(vehiclePromises);
+						setVehicleDetails(vehicles.filter((vehicle) => vehicle !== null));
+					} else {
+						console.log('No wishlist found for the user.');
+					}
+				} else {
+					console.log('No user is logged in.');
+				}
 			} catch (error) {
 				console.error('Error fetching wishlist: ', error);
 			}
@@ -88,10 +109,13 @@ const WishlistTab = ({ user }) => {
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-			{wishlist.length > 0 ? (
-				wishlist.map((item, index) => (
+			{vehicleDetails.length > 0 ? (
+				vehicleDetails.map((vehicle, index) => (
 					<View key={index} style={styles.wishlistItem}>
-						<Text>{item.vehicleName}</Text>
+						<Text style={styles.vehicleText}>
+							{vehicle.brand} {vehicle.model} ({vehicle.year})
+						</Text>
+						<Text style={styles.vehicleText}>{vehicle.price} CFA/Jour</Text>
 					</View>
 				))
 			) : (
@@ -100,6 +124,7 @@ const WishlistTab = ({ user }) => {
 		</ScrollView>
 	);
 };
+
 
 const UserProfileScreen = () => {
 	const [user, setUser] = useState(null);

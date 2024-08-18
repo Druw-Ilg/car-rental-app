@@ -1,6 +1,3 @@
-/* eslint-disable react/prop-types */
-// SedanScreen
-
 import React, { useState, useEffect } from 'react';
 import {
 	View,
@@ -8,15 +5,17 @@ import {
 	Image,
 	StyleSheet,
 	StatusBar,
-	ScrollView
+	ScrollView,
+	TouchableOpacity
 } from 'react-native';
 import { Card } from 'react-native-paper';
 
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/firebaseConfig';
+import { collection, getDocs,doc,getDoc,setDoc,arrayUnion,arrayRemove,updateDoc } from 'firebase/firestore';
+import { db,auth } from '../../firebase/firebaseConfig';
 
 const SedanScreen = ({ navigation }) => {
 	const [vehicles, setVehicles] = useState([]);
+	const [wishlist, setWishlist] = useState([]); 
 
 	useEffect(() => {
 		const fetchVehicles = async () => {
@@ -27,38 +26,86 @@ const SedanScreen = ({ navigation }) => {
 						id: doc.id,
 						...doc.data()
 					}));
-					const SUVs = fetchedVehicles.filter(
+					const sedans = fetchedVehicles.filter(
 						(vehicle) => vehicle.type === 'Berline/Sedan'
 					);
-					setVehicles(SUVs);
-					// setFilteredVehicles(fetchedVehicles);
+					setVehicles(sedans);
 				} catch (error) {
-					console.error(console.error());
+					console.error(error);
 				}
+			}
+		};
+		const fetchWishlist = async () => {
+			const user = auth.currentUser;
+			if (user) {
+				const wishlistDocRef = doc(db, 'wishlist', user.uid);
+				const wishlistDoc = await getDoc(wishlistDocRef);
+				if (wishlistDoc.exists()) {
+					setWishlist(wishlistDoc.data().vehicleID || []);
+				} else {
+					console.log('No wishlist found for the user.');
+				}
+			} else {
+				console.log('No user is logged in.');
 			}
 		};
 
 		fetchVehicles();
+		fetchWishlist(); 
 	}, []);
+
+	const updateWishlistInFirestore = async (userId, vehicleId, add) => {
+		try {
+			const wishlistDocRef = doc(db, 'wishlist', userId); // Reference to the user's wishlist document
+
+			if (add) {
+				await setDoc(
+					wishlistDocRef,
+					{
+						vehicleID: arrayUnion(vehicleId)
+					},
+					{ merge: true }
+				);
+			} else {
+				await updateDoc(wishlistDocRef, {
+					vehicleID: arrayRemove(vehicleId)
+				});
+			}
+		} catch (error) {
+			console.error('Error updating wishlist: ', error);
+		}
+	};
+
+	const toggleWishlist = async (vehicleId) => {
+		const user = auth.currentUser;
+
+		if (user) {
+			const userId = user.uid;
+
+			setWishlist((prevWishlist) => {
+				const isInWishlist = prevWishlist.includes(vehicleId);
+
+				if (isInWishlist) {
+					updateWishlistInFirestore(userId, vehicleId, false);
+					return prevWishlist.filter((id) => id !== vehicleId);
+				} else {
+					updateWishlistInFirestore(userId, vehicleId, true);
+					return [...prevWishlist, vehicleId];
+				}
+			});
+		} else {
+			console.log('No user is logged in');
+		}
+	};
 	const RenderCars = ({ item }) => {
-		// Limit car details to maximum 20 words
-		// const renderDetails = (details) => {
-		// 	// Split the details into words
-		// 	const words = details.split(' ');
-		// 	// If the number of words exceeds 15, truncate and append ellipsis
-		// 	if (words.length > 15) {
-		// 		return words.slice(0, 15).join(' ') + '...';
-		// 	} else {
-		// 		return details + '...';
-		// 	}
-		// };
+		const isInWishlist = wishlist.includes(item.id);
 
 		return (
 			<Card
 				style={styles.contentCardWrapper}
 				onPress={() =>
 					navigation.navigate('CarDetails', {
-						vehicle: item
+						vehicle: item,
 					})
 				}
 			>
@@ -72,14 +119,25 @@ const SedanScreen = ({ navigation }) => {
 							{item.brand} {item.model} {item.year}
 						</Text>
 						<Text style={styles.vehicleText}>{item.price} CFA/Jour</Text>
-						{/* <Text numberOfLines={1} style={styles.vehicleText}>
-							Details: {item.carDetails}
-						</Text> */}
+						<TouchableOpacity
+							style={styles.wishlistButton}
+							onPress={() => toggleWishlist(item.id)} // Handle wishlist toggle
+						>
+							<Image
+								source={
+									isInWishlist
+										? require('../../assets/heart-filled.png')
+										: require('../../assets/heart.png')
+								}
+								style={styles.wishlistIcon}
+							/>
+						</TouchableOpacity>
 					</View>
 				</Card.Content>
 			</Card>
 		);
 	};
+
 	return (
 		<ScrollView>
 			{vehicles.map((vehicle) => (
@@ -167,8 +225,8 @@ const styles = StyleSheet.create({
 	},
 	contentCardDetails: {
 		justifyContent: 'space-around',
-		width: '40%',
-		marginLeft: 10
+		width: '100%',
+		marginLeft: 10,
 	},
 	vehicleBrand: {
 		fontSize: 18,
@@ -177,7 +235,26 @@ const styles = StyleSheet.create({
 	vehicleText: {
 		fontSize: 16,
 		fontWeight: 'bold'
-	}
+	},
+
+	wishlistButton: {
+		position: 'absolute',
+		bottom: 0,
+		right: 20,
+		backgroundColor: '#fff',
+		borderRadius: 50,
+		padding: 10,
+		elevation: 5,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+	},
+	wishlistIcon: {
+		width: 20,
+		height: 20,
+		tintColor: '#e74c3c',
+	},
 });
 
 export default SedanScreen;
