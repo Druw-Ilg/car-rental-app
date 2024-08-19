@@ -5,12 +5,18 @@ import {
 	ScrollView,
 	Animated,
 	View,
+	Text,
 	ImageBackground,
-	useWindowDimensions
+	useWindowDimensions,
+	TouchableOpacity
 } from 'react-native';
 
-export function UIComponents() {
-	return <div>UIComponents</div>;
+export function FormBtn({ btnLink, btnText }) {
+	return (
+		<TouchableOpacity onPress={btnLink} style={styles.formBtn}>
+			<Text style={styles.txtFormBtn}>{btnText}</Text>
+		</TouchableOpacity>
+	);
 }
 
 export function ImagesCaroussel({ vehicle }) {
@@ -89,6 +95,23 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center'
-	}
+	},
 	// Vehicles caroussel //
+
+	//******** Form Btn **********//
+
+	formBtn: {
+		backgroundColor: 'rgb(40 52 74)',
+		width: '100%',
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		marginTop: 20,
+		fontWeight: 'bold'
+	},
+	txtFormBtn: {
+		color: '#fff',
+		fontSize: 18,
+		textAlign: 'center'
+	}
 });
