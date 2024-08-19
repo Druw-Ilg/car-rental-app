@@ -59,7 +59,11 @@ const UserMenu = ({ handleLinkPress, navigation }) => {
 					</Text>
 				)}
 			</TouchableOpacity>
-
+			<TouchableOpacity style={styles.link} onPress={() => {navigation.navigate('Booking Requests')}}>
+				<Text style={styles.linkText}>
+					<Icon name="book" size={30} color="#000" /> My Bookings
+				</Text>
+			</TouchableOpacity>
 			<TouchableOpacity style={styles.link} onPress={() => logout(navigation)}>
 				<Text style={styles.linkText}>
 					<Icon name="logout" size={30} color="#000" /> Se déconnecter

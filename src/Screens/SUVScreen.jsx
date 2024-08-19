@@ -4,6 +4,7 @@ import {
 	Text,
 	Image,
 	StyleSheet,
+	Alert,
 	StatusBar,
 	ScrollView,
 	TouchableOpacity
@@ -95,7 +96,7 @@ const SUVScreen = ({ navigation }) => {
 				}
 			});
 		} else {
-			console.log('No user is logged in');
+			Alert.alert('Please login first....')
 		}
 	};
 

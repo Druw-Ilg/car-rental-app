@@ -3,6 +3,7 @@ import {
 	View,
 	Text,
 	Image,
+	Alert,
 	StyleSheet,
 	StatusBar,
 	ScrollView,
@@ -94,7 +95,7 @@ const SedanScreen = ({ navigation }) => {
 				}
 			});
 		} else {
-			console.log('No user is logged in');
+			Alert.alert('Please login first....')
 		}
 	};
 	const RenderCars = ({ item }) => {

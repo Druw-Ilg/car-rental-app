@@ -16,6 +16,8 @@ import VendorDrawerContent from './src/components/VendorDrawerContent';
 import UserDrawerContent from './src/components/UserDrawerContent';
 import VendorProfileScreen from './src/Screens/vendor/VendorProfileScreen';
 import UserProfileScreen from './src/Screens/vendor/UserProfileScreen';
+import BookingScreen from './src/Screens/BookingScreen';
+import BookingRequests from './src/Screens/vendor/BookingRequests';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -70,6 +72,8 @@ const HomeDrawer = () => {
 				component={CarDetailsScreen}
 				options={{ title: '' }}
 			/>
+			<Stack.Screen name="Booking" component={BookingScreen} options={{title:''}} />
+			<Stack.Screen name="Booking Requests" component={BookingRequests} options={{title:''}} />
 			<Stack.Screen name="Connexion" component={SignUpScreen} />
 			<Stack.Screen name="Tableau de bord" component={VendorDashboard} />
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />

@@ -33,7 +33,9 @@ const VendorDashboard = () => {
 		brand: '',
 		model: '',
 		year: '',
-		price: ''
+		price: '',
+		pickupLocation:'',
+		dropoffLocation:'',
 	});
 	const [images, setImages] = useState([]);
 	const [isCollapsed, setIsCollapsed] = useState(true);
@@ -174,7 +176,9 @@ const VendorDashboard = () => {
 								brand: '',
 								model: '',
 								year: '',
-								price: ''
+								price: '',
+								pickupLocation:'',
+								dropoffLocation:'',
 							});
 							setImages([]);
 							fetchVehicles();
@@ -244,6 +248,18 @@ const VendorDashboard = () => {
 						placeholder="Prix/Jour"
 						value={vehicleData.price}
 						onChangeText={(value) => handleInputChange('price', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Abholort"
+						value={vehicleData.pickupLocation}
+						onChangeText={(value) => handleInputChange('pickupLocation', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Abgabeort"
+						value={vehicleData.dropoffLocation}
+						onChangeText={(value) => handleInputChange('dropoffLocation', value)}
 						style={styles.input}
 					/>
 
