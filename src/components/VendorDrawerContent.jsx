@@ -61,6 +61,7 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 				)}
 			</TouchableOpacity>
 
+			
 			<TouchableOpacity
 				style={styles.link}
 				onPress={() => handleLinkPress('Tableau de bord')}
@@ -69,6 +70,7 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 					<AntIcon name="dashboard" size={30} color="#000" /> Tableau de bord
 				</Text>
 			</TouchableOpacity>
+
 
 			<TouchableOpacity style={styles.link} onPress={() => logout(navigation)}>
 				<Text style={styles.linkText}>
