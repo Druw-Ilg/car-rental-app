@@ -21,6 +21,8 @@ import BookingRequests from './src/Screens/vendor/BookingRequests';
 import VendorDashboard from './src/Screens/vendor/VendorDashboard';
 import { MenuProvider } from 'react-native-popup-menu';
 import BookingDetails from './src/Screens/vendor/BookinDetails';
+import BoostingDetails from './src/Screens/vendor/BoostingDetails';
+import Settings from './src/Screens/vendor/Settings';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -101,6 +103,9 @@ const HomeDrawer = () => {
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
 			<Stack.Screen name="Booking Details" component={BookingDetails} 
 		       options={{headerTitleAlign:'center',headerTitle:'Booking#123'}}/>
+			<Stack.Screen name="Boosting Details" component={BoostingDetails} 
+		       options={{headerTitleAlign:'center',headerTitle:'Boosting Your List'}}/>
+			<Stack.Screen name="Settings" component={Settings} options={{headerTitle:''}}/>
 			<Stack.Screen name="Profile" component={UserProfileScreen} />
 		</Stack.Navigator>
 	);

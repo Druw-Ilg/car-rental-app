@@ -3,25 +3,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { Text } from 'react-native-paper';
 import Cars from './Cars'
 import BookingRequests from './BookingRequests';
+import Analytics from './Analytics'
 const Tab = createMaterialTopTabNavigator();
 const VendorDashboard = () => {
    
-   const Bookings =  ()=>{
-    return(
-        <Text> i ama Bookings section</Text>
-    )
-
-   }
-   const Analytics =  ()=>{
-    return(
-        <Text> i am analytics section</Text>
-    )
-
-   }
-
-
-
-
   return (
     <Tab.Navigator>
     <Tab.Screen  name="Cars" component={Cars} />
