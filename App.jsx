@@ -28,11 +28,11 @@ const Drawer = createDrawerNavigator();
 const App = () => {
 	return (
 		<MenuProvider>
-		<AuthProvider>
-			<NavigationContainer>
-				<MainStack />
-			</NavigationContainer>
-		</AuthProvider>
+			<AuthProvider>
+				<NavigationContainer>
+					<MainStack />
+				</NavigationContainer>
+			</AuthProvider>
 		</MenuProvider>
 	);
 };
@@ -95,12 +95,18 @@ const HomeDrawer = () => {
 				component={BookingRequests}
 				options={{ title: '' }}
 			/>
-			
-			<Stack.Screen name="Tableau de bord" component={VendorDashboard} 
-			options={{headerTitleAlign:'center',headerTitle:'Dashboard'}}/>
+
+			<Stack.Screen
+				name="Tableau de bord"
+				component={VendorDashboard}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Dashboard' }}
+			/>
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
-			<Stack.Screen name="Booking Details" component={BookingDetails} 
-		       options={{headerTitleAlign:'center',headerTitle:'Booking#123'}}/>
+			<Stack.Screen
+				name="Booking Details"
+				component={BookingDetails}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Booking#123' }}
+			/>
 			<Stack.Screen name="Profile" component={UserProfileScreen} />
 		</Stack.Navigator>
 	);
