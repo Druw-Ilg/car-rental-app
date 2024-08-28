@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/Screens/HomeScreen';
 import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
@@ -23,9 +24,11 @@ import { MenuProvider } from 'react-native-popup-menu';
 import BookingDetails from './src/Screens/vendor/BookinDetails';
 import BoostingDetails from './src/Screens/vendor/BoostingDetails';
 import Settings from './src/Screens/vendor/Settings';
+import SearchScreen from './src/Screens/SearchScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
 const App = () => {
 	return (
@@ -123,7 +126,22 @@ const HomeDrawer = () => {
 				options={{ headerTitle: '' }}
 			/>
 			<Stack.Screen name="Profile" component={UserProfileScreen} />
+			<Stack.Screen
+				name="search"
+				component={SearchScreen}
+				options={{ headerTitle: '' }}
+			/>
 		</Stack.Navigator>
+	);
+};
+
+const TabNavigator = () => {
+	return (
+		<NavigationContainer>
+			<Tab.Navigator>
+				<Tab.Screen name="Home" component={HomeScreen} />
+			</Tab.Navigator>
+		</NavigationContainer>
 	);
 };
 

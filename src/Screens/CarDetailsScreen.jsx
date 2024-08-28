@@ -109,7 +109,8 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#fff'
 	},
 
 	title: {
