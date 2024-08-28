@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
@@ -114,7 +115,7 @@ const WishlistTab = ({ user }) => {
 									Price: {vehicle.price} CFA/Jour
 								</Text>
 								<TouchableOpacity style={styles.removeButton}>
-									<Text style={styles.vehiclePrice}>Availability</Text>
+									<Text style={{ color: 'blue' }}>Availability</Text>
 								</TouchableOpacity>
 							</View>
 							<View>
@@ -122,13 +123,19 @@ const WishlistTab = ({ user }) => {
 									onPress={() => handleRemove(index)}
 									style={styles.removeButton}
 								>
-									<FontAwesome name="heart" size={30} color="#000" />
+									<Image
+										source={require('..//..//../assets/heart.png')}
+										style={{ width: 30, height: 30 }}
+									/>
 								</TouchableOpacity>
 								<TouchableOpacity
 									onPress={() => handleRemove(index)}
 									style={styles.removeButton}
 								>
-									<FontAwesome name="delete" size={30} color="#000" />
+									<Image
+										source={require('..//..//../assets/delete.png')}
+										style={{ width: 30, height: 30 }}
+									/>
 								</TouchableOpacity>
 							</View>
 						</View>
@@ -180,12 +187,11 @@ const UserProfileScreen = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#FFF'
+		backgroundColor: '#f5f5f5'
 	},
 	wishlistItem: {
 		flexDirection: 'col',
 		padding: 10,
-		backgroundColor: 'red',
 		justifyContent: 'space-between'
 	},
 	vehicleImage: {
@@ -197,8 +203,9 @@ const styles = StyleSheet.create({
 	vehicleDetails: {
 		width: '100%',
 		flexDirection: 'row',
-		backgroundColor: 'yellow',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		paddingVertical: 14,
+		paddingHorizontal: 10
 	},
 	vehicleName: {
 		fontSize: 18,
@@ -211,9 +218,7 @@ const styles = StyleSheet.create({
 		marginBottom: 10
 	},
 	removeButton: {
-		paddingVertical: 14,
-		paddingHorizontal: 10,
-		borderRadius: 8
+		marginBottom: 10
 	},
 	removeButtonText: {
 		color: '#000',
