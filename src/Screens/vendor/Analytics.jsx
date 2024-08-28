@@ -26,8 +26,8 @@ const chartConfig = {
   propsForBackgroundLines: {
     stroke: 'transparent', // hides grid lines
   },
-  yLabelsOffset: 9999, // hides Y-axis labels by offsetting them out of view
-  xLabelsOffset: -10, // optional: adjusts the X-axis labels position
+  yLabelsOffset: 9999, 
+  xLabelsOffset: -10, 
 };
 
 const Analytics = () => {
@@ -67,6 +67,28 @@ const Analytics = () => {
           withHorizontalLabels={true} // This keeps the X-axis labels visible
           style={styles.chart}
         />
+       <View style={styles.cardContainer}>
+         <View style={styles.cardRow}>
+         <View style={styles.card}>
+        <Text style={styles.labelCards}>Cars listed</Text>
+        <Text style={styles.valueCards}>25</Text>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.labelCards}>Most rented car type</Text>
+        <Text style={styles.valueCards}>SUV</Text>
+      </View>
+         </View>
+       <View style={styles.cardRow}>
+       <View style={styles.card}>
+        <Text style={styles.labelCards}>Average trip length</Text>
+        <Text style={styles.valueCards}>3 days</Text>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.labelCards}>Total Bookings</Text>
+        <Text style={styles.valueCards}>45</Text>
+      </View>
+       </View>
+       </View>
       </View>
     </ScrollView>
   );
@@ -107,6 +129,35 @@ const styles = StyleSheet.create({
   },
   greenText: {
     color: '#00BFA5',
+  },
+  cardContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  cardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Ensure the cards are spaced evenly
+    flex: 0.5,
+  },
+  card: {
+    flex:1,
+    padding: 20,
+    borderRadius: 10,
+    margin: 10,
+    alignItems: 'center',
+    borderRadius:18,
+    borderColor:'gray',
+    borderWidth:0.4,
+  },
+  labelCards: {
+    fontSize: 16,
+    color: '#6c757d',
+  },
+  valueCards: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
+    marginTop: 5,
   },
 });
 
