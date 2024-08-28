@@ -8,7 +8,8 @@ import {
 	StyleSheet,
 	Image,
 	ScrollView,
-	StatusBar
+	StatusBar,
+	ActivityIndicator
 } from 'react-native';
 import { Searchbar, Card, Title } from 'react-native-paper';
 import Header from '../components/Header';
@@ -40,6 +41,12 @@ const HomeScreen = ({ navigation }) => {
 			} catch (error) {
 				console.error(console.error());
 			}
+		} else {
+			return (
+				<Text style={{ textAlign: 'center' }}>
+					Pas de véhicule disponible pour le moment.
+				</Text>
+			);
 		}
 	};
 
@@ -155,13 +162,21 @@ const HomeScreen = ({ navigation }) => {
 				</View>
 
 				<View>
-					{filteredVehicles.length > 0
-						? filteredVehicles.map((vehicle) => (
-								<RenderCars key={vehicle.id} item={vehicle} />
-							))
-						: vehicles.map((vehicle) => (
-								<RenderCars key={vehicle.id} item={vehicle} />
-							))}
+					{filteredVehicles.length > 0 ? (
+						filteredVehicles.map((vehicle) => (
+							<RenderCars key={vehicle.id} item={vehicle} />
+						))
+					) : vehicles.length > 0 ? (
+						vehicles.map((vehicle) => (
+							<RenderCars key={vehicle.id} item={vehicle} />
+						))
+					) : (
+						<ActivityIndicator
+							size="large"
+							color="#0000ff"
+							style={styles.loader}
+						/>
+					)}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
