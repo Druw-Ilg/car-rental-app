@@ -13,7 +13,7 @@ const Header = (props) => {
 				onPress={() => navigation.openDrawer()}
 				style={{ marginTop: 20 }}
 			>
-				<Icon name="segment" size={50} color="#fff" />
+				<Icon name="menu" size={50} color="#fff" />
 			</TouchableOpacity>
 		</View>
 	);

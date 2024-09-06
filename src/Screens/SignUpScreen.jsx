@@ -11,7 +11,6 @@ import {
 	ActivityIndicator,
 	Switch
 } from 'react-native';
-import { FormBtn } from '../components/UIComponents';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
@@ -138,7 +137,9 @@ const SignUpScreen = ({ navigation }) => {
 						/>
 					) : (
 						<>
-							<FormBtn btnLink={handleLogin} btnText={'Connexion'} />
+							<TouchableOpacity onPress={handleLogin} style={styles.formBtn}>
+								<Text style={styles.txtFormBtn}>Connexion</Text>
+							</TouchableOpacity>
 
 							{/* Google Signin */}
 							{/* <TouchableOpacity
@@ -166,17 +167,6 @@ const SignUpScreen = ({ navigation }) => {
 					>
 						<Text style={styles.accountTypeButtonText}>
 							Pas membre? S&apos;inscrire
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={() => {
-							navigation.navigate('PasswordRecovery');
-						}}
-						style={styles.accountTypeButton}
-					>
-						<Text style={styles.accountTypeButtonText}>
-							Mot de passe oublié?
 						</Text>
 					</TouchableOpacity>
 				</View>
@@ -242,7 +232,9 @@ const SignUpScreen = ({ navigation }) => {
 							style={styles.loader}
 						/>
 					) : (
-						<FormBtn btnLink={handleSignUp} btnText={"S'inscrire"} />
+						<TouchableOpacity onPress={handleSignUp} style={styles.formBtn}>
+							<Text style={styles.txtFormBtn}>S&apos;inscrire</Text>
+						</TouchableOpacity>
 					)}
 
 					<TouchableOpacity
@@ -298,7 +290,20 @@ const styles = StyleSheet.create({
 		color: 'blue',
 		fontSize: 18
 	},
-
+	formBtn: {
+		backgroundColor: 'rgb(40 52 74)',
+		width: '100%',
+		paddingVertical: 10,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		marginTop: 20,
+		fontWeight: 'bold'
+	},
+	txtFormBtn: {
+		color: '#fff',
+		fontSize: 18,
+		textAlign: 'center'
+	},
 	error: {
 		color: 'red',
 		marginVertical: 10,

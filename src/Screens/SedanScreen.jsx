@@ -11,21 +11,12 @@ import {
 } from 'react-native';
 import { Card } from 'react-native-paper';
 
-import {
-	collection,
-	getDocs,
-	doc,
-	getDoc,
-	setDoc,
-	arrayUnion,
-	arrayRemove,
-	updateDoc
-} from 'firebase/firestore';
-import { db, auth } from '../../firebase/firebaseConfig';
+import { collection, getDocs,doc,getDoc,setDoc,arrayUnion,arrayRemove,updateDoc } from 'firebase/firestore';
+import { db,auth } from '../../firebase/firebaseConfig';
 
 const SedanScreen = ({ navigation }) => {
 	const [vehicles, setVehicles] = useState([]);
-	const [wishlist, setWishlist] = useState([]);
+	const [wishlist, setWishlist] = useState([]); 
 
 	useEffect(() => {
 		const fetchVehicles = async () => {
@@ -61,7 +52,7 @@ const SedanScreen = ({ navigation }) => {
 		};
 
 		fetchVehicles();
-		fetchWishlist();
+		fetchWishlist(); 
 	}, []);
 
 	const updateWishlistInFirestore = async (userId, vehicleId, add) => {
@@ -104,7 +95,7 @@ const SedanScreen = ({ navigation }) => {
 				}
 			});
 		} else {
-			Alert.alert('Please login first....');
+			Alert.alert('Please login first....')
 		}
 	};
 	const RenderCars = ({ item }) => {
@@ -115,7 +106,7 @@ const SedanScreen = ({ navigation }) => {
 				style={styles.contentCardWrapper}
 				onPress={() =>
 					navigation.navigate('CarDetails', {
-						vehicle: item
+						vehicle: item,
 					})
 				}
 			>
@@ -149,7 +140,7 @@ const SedanScreen = ({ navigation }) => {
 	};
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollView>
 			{vehicles.map((vehicle) => (
 				<RenderCars key={vehicle.id} item={vehicle} />
 			))}
@@ -160,7 +151,7 @@ const SedanScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff'
+		marginTop: StatusBar.currentHeight || 0
 	},
 	blueWrapper: {
 		backgroundColor: 'rgb(40 52 74)',
@@ -224,8 +215,7 @@ const styles = StyleSheet.create({
 		color: 'rgb(40 52 74)'
 	},
 	contentCardWrapper: {
-		marginVertical: 20,
-		backgroundColor: '#fff'
+		marginVertical: 20
 	},
 	contentCardsContainer: {
 		width: '100%'
@@ -237,7 +227,7 @@ const styles = StyleSheet.create({
 	contentCardDetails: {
 		justifyContent: 'space-around',
 		width: '100%',
-		marginLeft: 10
+		marginLeft: 10,
 	},
 	vehicleBrand: {
 		fontSize: 18,
@@ -259,13 +249,13 @@ const styles = StyleSheet.create({
 		shadowColor: '#000',
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.25,
-		shadowRadius: 3.84
+		shadowRadius: 3.84,
 	},
 	wishlistIcon: {
 		width: 20,
 		height: 20,
-		tintColor: '#e74c3c'
-	}
+		tintColor: '#e74c3c',
+	},
 });
 
 export default SedanScreen;
