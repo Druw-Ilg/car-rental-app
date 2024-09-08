@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/Screens/HomeScreen';
 import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
@@ -28,7 +28,7 @@ import SearchScreen from './src/Screens/SearchScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
 
 const App = () => {
 	return (
@@ -135,14 +135,14 @@ const HomeDrawer = () => {
 	);
 };
 
-const TabNavigator = () => {
-	return (
-		<NavigationContainer>
-			<Tab.Navigator>
-				<Tab.Screen name="Home" component={HomeScreen} />
-			</Tab.Navigator>
-		</NavigationContainer>
-	);
-};
+// const TabNavigator = () => {
+// 	return (
+// 		<NavigationContainer>
+// 			<Tab.Navigator>
+// 				<Tab.Screen name="Home" component={HomeScreen} />
+// 			</Tab.Navigator>
+// 		</NavigationContainer>
+// 	);
+// };
 
 export default App;

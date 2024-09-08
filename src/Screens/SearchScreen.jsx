@@ -15,11 +15,11 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { Searchbar } from 'react-native-paper';
 
-const CustomSearchIcon = () => (
-	<View style={{ marginRight: 10 }}>
-		<Icon name="magnify" size={30} color="#050505" />
-	</View>
-);
+// const CustomSearchIcon = () => (
+// 	<View style={{ marginRight: 10 }}>
+// 		<Icon name="magnify" size={30} color="#050505" />
+// 	</View>
+// );
 
 function SearchScreen({ navigation }) {
 	const [search, setSearch] = useState('');
