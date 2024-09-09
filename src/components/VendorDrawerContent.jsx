@@ -61,6 +61,7 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 				)}
 			</TouchableOpacity>
 
+			
 			<TouchableOpacity
 				style={styles.link}
 				onPress={() => handleLinkPress('Tableau de bord')}
@@ -69,7 +70,22 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 					<AntIcon name="dashboard" size={30} color="#000" /> Tableau de bord
 				</Text>
 			</TouchableOpacity>
-
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('Boosting Details')}
+			>
+				<Text style={styles.linkText}>
+					<AntIcon name="rocket1" size={30} color="#000" /> How To Boost
+				</Text>
+			</TouchableOpacity>
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('Settings')}
+			>
+				<Text style={styles.linkText}>
+					<AntIcon name="setting" size={30} color="#000" /> Settings
+				</Text>
+			</TouchableOpacity>
 			<TouchableOpacity style={styles.link} onPress={() => logout(navigation)}>
 				<Text style={styles.linkText}>
 					<Icon name="logout" size={30} color="#000" /> Se déconnecter

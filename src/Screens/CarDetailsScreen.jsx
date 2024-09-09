@@ -15,10 +15,12 @@ import {
 import FontAwesome from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ImagesCaroussel } from '../components/UIComponents';
 import { getCars } from '../utils/backendFunc';
+import { auth } from '../../firebase/firebaseConfig';
 
 export const CarDetailsScreen = ({ route, navigation }) => {
 	const { vehicle } = route.params;
 	const [otherVehicles, setOtherVehicles] = useState([]);
+	const user = auth.currentUser;
 
 	useEffect(() => {
 		async function fetchData() {
@@ -75,20 +77,22 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 						{vehicle.price} CFA/Jours
 					</Text>
 				</View>
+				{user && (
+					<TouchableOpacity
+						onPress={() => makePhoneCall()}
+						style={styles.contactBtn}
+					>
+						<FontAwesome name="phone" size={30} color="#fff" />
+					</TouchableOpacity>
+				)}
 
 				<TouchableOpacity
-					onPress={() => makePhoneCall()}
+					onPress={() => navigation.navigate('Booking')}
 					style={styles.contactBtn}
 				>
-					<FontAwesome name="phone" size={30} color="#fff" />
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() =>
-						navigation.navigate('Booking')
-					}
-					style={styles.contactBtn}
-				>
-					<Text style={[styles.subtitle,{color:'#fff',padding:3}]}>Book Now</Text>
+					<Text style={[styles.subtitle, { color: '#fff', padding: 3 }]}>
+						Book Now
+					</Text>
 				</TouchableOpacity>
 				<View>
 					<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
@@ -105,7 +109,8 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1
+		flex: 1,
+		backgroundColor: '#fff'
 	},
 
 	title: {

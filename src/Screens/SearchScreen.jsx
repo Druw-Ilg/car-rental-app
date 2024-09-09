@@ -1,30 +1,29 @@
-/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import {
-	SafeAreaView,
 	View,
 	Text,
 	StyleSheet,
-	Image,
 	ScrollView,
-	StatusBar,
+	SafeAreaView,
 	ActivityIndicator,
-	TouchableOpacity
+	TouchableOpacity,
+	Image
 } from 'react-native';
-import { Searchbar, Card, Title } from 'react-native-paper';
-import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { Searchbar } from 'react-native-paper';
 
 const CustomSearchIcon = () => (
 	<View style={{ marginRight: 10 }}>
-		<Icon name="magnify" size={40} color="white" />
+		<Icon name="magnify" size={30} color="#050505" />
 	</View>
 );
 
-const HomeScreen = ({ navigation }) => {
+function SearchScreen({ navigation }) {
+	const [search, setSearch] = useState('');
+	const [filteredVehicles, setFilteredVehicles] = useState([]);
 	const [vehicles, setVehicles] = useState([]);
 
 	const fetchVehicles = async () => {
@@ -48,13 +47,21 @@ const HomeScreen = ({ navigation }) => {
 			);
 		}
 	};
-
 	useEffect(() => {
 		fetchVehicles();
 		const intervalId = setInterval(fetchVehicles, 30000); // Fetch every 30 seconds
 
 		return () => clearInterval(intervalId); // Clear interval on unmount
 	}, []);
+
+	useEffect(() => {
+		const filtered = vehicles.filter(
+			(vehicle) =>
+				vehicle.brand.toLowerCase().includes(search.toLowerCase()) ||
+				vehicle.model.toLowerCase().includes(search.toLowerCase())
+		);
+		setFilteredVehicles(filtered);
+	}, [search, vehicles]);
 
 	const RenderCars = ({ item }) => {
 		// Limit car details to maximum 20 words
@@ -97,61 +104,32 @@ const HomeScreen = ({ navigation }) => {
 			</TouchableOpacity>
 		);
 	};
-
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={styles.wrapper}>
 			<ScrollView>
-				<View style={styles.blueWrapper}>
-					<Header navigation={navigation} />
-
+				<View style={styles.searchBarWrapper}>
 					<Searchbar
+						placeholder="Une marque ou un modèle de véhicule..."
+						onChangeText={setSearch}
+						value={search}
+						placeholderTextColor="#010101"
+						inputStyle={{
+							color: '#010101',
+							fontSize: 14,
+							minHeight: 18,
+							lineHeight: 17
+						}}
 						style={styles.searchBar}
-						placeholder="Une marque ou un modèle de véhicule.."
-						onPress={() => navigation.navigate('search')}
-						placeholderTextColor="#fff"
-						inputStyle={{ color: 'white' }}
-						icon={() => <CustomSearchIcon />}
+						autoFocus={true}
 					/>
-
-					{/* Welcome text */}
-					<Text style={styles.headerText}>
-						Louer un véhicule n&apos;a jamais été aussi facile.
-					</Text>
-
-					{/* Cards at the bottom */}
-					<View style={styles.imgBoxHeaderWrapper}>
-						<Card
-							style={styles.imgCardHeader}
-							onPress={() => navigation.navigate('Sedan')}
-						>
-							<Card.Content>
-								<Image
-									// eslint-disable-next-line no-undef
-									source={require('../../assets/blue-sedan.jpg')}
-									style={styles.cardImageHeader}
-								/>
-								<Title style={styles.carTypes}>Berline/Sedan</Title>
-							</Card.Content>
-						</Card>
-
-						<Card
-							style={styles.imgCardHeader}
-							onPress={() => navigation.navigate('SUV')}
-						>
-							<Card.Content>
-								<Image
-									// eslint-disable-next-line no-undef
-									source={require('../../assets/blue-suv.jpg')}
-									style={styles.cardImageHeader}
-								/>
-								<Title style={styles.carTypes}>Cross/SUV</Title>
-							</Card.Content>
-						</Card>
-					</View>
 				</View>
 
 				<View>
-					{vehicles.length > 0 ? (
+					{filteredVehicles.length > 0 ? (
+						filteredVehicles.map((vehicle) => (
+							<RenderCars key={vehicle.id} item={vehicle} />
+						))
+					) : vehicles.length > 0 ? (
 						vehicles.map((vehicle) => (
 							<RenderCars key={vehicle.id} item={vehicle} />
 						))
@@ -166,68 +144,26 @@ const HomeScreen = ({ navigation }) => {
 			</ScrollView>
 		</SafeAreaView>
 	);
-};
+}
 
 const styles = StyleSheet.create({
-	container: {
+	wrapper: {
 		flex: 1,
-		marginTop: StatusBar.currentHeight || 0,
 		backgroundColor: '#fff'
 	},
-	blueWrapper: {
-		backgroundColor: 'rgb(40 52 74)',
+	searchBarWrapper: {
 		alignItems: 'center',
-		marginBottom: 100
+		marginTop: 10
 	},
-
 	searchBar: {
 		width: '90%',
-		backgroundColor: 'transparent',
-		marginTop: 20,
+		backgroundColor: '#f5f5f5',
 		marginBottom: 30,
-		borderColor: '#f2f2f3',
-		borderBottomWidth: 1,
+		paddingHorizontal: 3,
+		borderColor: '#020203',
+		borderWidth: 1,
 		borderRadius: 32,
 		opacity: 0.6
-	},
-	headerText: {
-		color: '#f3f3f3',
-		fontSize: 27,
-		textAlign: 'center'
-	},
-	imgBoxHeaderWrapper: {
-		flexDirection: 'row',
-		justifyContent: 'space-around',
-		width: '100%',
-		marginTop: 40,
-		marginBottom: -70
-	},
-	imgCardHeader: {
-		width: '45%',
-		margin: 5,
-		padding: 5,
-		backgroundColor: 'white'
-	},
-	cardImageHeader: {
-		width: '100%',
-		height: 85,
-		resizeMode: 'contain',
-		marginBottom: 10
-	},
-	carTypes: {
-		textAlign: 'center'
-	},
-
-	titleSection: {
-		fontWeight: '800',
-		fontSize: 26,
-		textDecorationLine: 'underline',
-		color: 'rgb(40 52 74)'
-	},
-	subTitleSection: {
-		fontSize: 20,
-		fontWeight: 400,
-		color: 'rgb(40 52 74)'
 	},
 	contentCardWrapper: {
 		marginVertical: 20,
@@ -261,4 +197,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default HomeScreen;
+export default SearchScreen;
