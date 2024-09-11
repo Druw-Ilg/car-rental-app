@@ -3,7 +3,6 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './src/Screens/HomeScreen';
 import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
@@ -28,16 +27,15 @@ import SearchScreen from './src/Screens/SearchScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
-const Tab = createBottomTabNavigator();
 
 const App = () => {
 	return (
 		<MenuProvider>
-			<AuthProvider>
-				<NavigationContainer>
-					<MainStack />
-				</NavigationContainer>
-			</AuthProvider>
+		<AuthProvider>
+			<NavigationContainer>
+				<MainStack />
+			</NavigationContainer>
+		</AuthProvider>
 		</MenuProvider>
 	);
 };
@@ -100,48 +98,19 @@ const HomeDrawer = () => {
 				component={BookingRequests}
 				options={{ title: '' }}
 			/>
-
-			<Stack.Screen
-				name="Tableau de bord"
-				component={VendorDashboard}
-				options={{ headerTitleAlign: 'center', headerTitle: 'Dashboard' }}
-			/>
+			
+			<Stack.Screen name="Tableau de bord" component={VendorDashboard} 
+			options={{headerTitleAlign:'center',headerTitle:'Dashboard'}}/>
+			<Stack.Screen name="search" component={SearchScreen} 
+			options={{headerTitleAlign:'center',headerTitle:'Search'}}/>
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
-			<Stack.Screen
-				name="Booking Details"
-				component={BookingDetails}
-				options={{ headerTitleAlign: 'center', headerTitle: 'Booking#123' }}
-			/>
-			<Stack.Screen
-				name="Boosting Details"
-				component={BoostingDetails}
-				options={{
-					headerTitleAlign: 'center',
-					headerTitle: 'Boosting Your List'
-				}}
-			/>
-			<Stack.Screen
-				name="Settings"
-				component={Settings}
-				options={{ headerTitle: '' }}
-			/>
-			<Stack.Screen name="Profile" component={UserProfileScreen} />
-			<Stack.Screen
-				name="search"
-				component={SearchScreen}
-				options={{ headerTitle: '' }}
-			/>
+			<Stack.Screen name="Booking Details" component={BookingDetails} 
+		       options={{headerTitleAlign:'center',headerTitle:'Booking'}}/>
+			<Stack.Screen name="Boosting Details" component={BoostingDetails} 
+		       options={{headerTitleAlign:'center',headerTitle:'Boosting Your List'}}/>
+			<Stack.Screen name="Settings" component={Settings} options={{headerTitle:''}}/>
+			<Stack.Screen name="Profile" component={UserProfileScreen}    options={{headerTitleAlign:'center',headerTitle:'Profile'}}/>
 		</Stack.Navigator>
-	);
-};
-
-const TabNavigator = () => {
-	return (
-		<NavigationContainer>
-			<Tab.Navigator>
-				<Tab.Screen name="Home" component={HomeScreen} />
-			</Tab.Navigator>
-		</NavigationContainer>
 	);
 };
 

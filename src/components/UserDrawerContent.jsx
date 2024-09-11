@@ -1,19 +1,20 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
-// User drawer Content
+//  drawer Content
 
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../utils/AuthContext';
 import * as SecureStore from 'expo-secure-store';
-import AntIcon from 'react-native-vector-icons/AntDesign';
 import CustomDrawerContent from './CustomDrawerContent';
 
-const UserMenu = ({ handleLinkPress, navigation }) => {
+const VendorMenu = ({ navigation, handleLinkPress }) => {
 	const { userData, logout } = useContext(AuthContext);
 	const [avatar, setAvatar] = useState(null);
 
@@ -59,7 +60,18 @@ const UserMenu = ({ handleLinkPress, navigation }) => {
 					</Text>
 				)}
 			</TouchableOpacity>
-		
+
+			
+			
+			
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('Settings')}
+			>
+				<Text style={styles.linkText}>
+					<AntIcon name="setting" size={30} color="#000" /> Settings
+				</Text>
+			</TouchableOpacity>
 			<TouchableOpacity style={styles.link} onPress={() => logout(navigation)}>
 				<Text style={styles.linkText}>
 					<Icon name="logout" size={30} color="#000" /> Se déconnecter
@@ -71,32 +83,37 @@ const UserMenu = ({ handleLinkPress, navigation }) => {
 
 const UserDrawerContent = ({ navigation }) => {
 	const [isLogedIn, setIsLogedIn] = useState(false);
+
 	const handleLinkPress = (screenName) => {
 		navigation.navigate(screenName);
 	};
 
 	useEffect(() => {
-		const getUsrData = async () => {
+		async function getUserData() {
+			// get the user data from SecureStore session
 			const user = await SecureStore.getItemAsync('user');
 
 			if (user) {
 				setIsLogedIn(true);
 			} else {
-				console.error("Couldn't log in the member");
-
+				console.log(
+					"Couldn't log in the vendor. <br> From VendorDrawerContent l-45: "
+				);
 				setIsLogedIn(false);
 			}
-		};
-		getUsrData();
+		}
+		getUserData();
 	}, []);
 
 	return (
 		<View style={styles.container}>
 			{isLogedIn ? (
-				<UserMenu handleLinkPress={handleLinkPress} navigation={navigation} />
+				<VendorMenu navigation={navigation} handleLinkPress={handleLinkPress} />
 			) : (
 				<CustomDrawerContent />
 			)}
+
+			{/* Add more links as needed */}
 		</View>
 	);
 };
@@ -116,6 +133,12 @@ const styles = StyleSheet.create({
 	linkText: {
 		color: '#000',
 		fontSize: 22
+	},
+	avatarImage: {
+		width: 50,
+		height: 50,
+		borderRadius: 12,
+		marginRight: 10
 	}
 });
 

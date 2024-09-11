@@ -136,6 +136,8 @@ const Cars = () => {
 	)
    }
 	const uploadVehicle = async () => {
+		console.log(userData.uid)
+
 		setLoading(true);
 		if (!vehicleData.type) {
 			console.error('Vous devez sélectionner un type de véhicules!');

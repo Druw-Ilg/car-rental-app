@@ -10,16 +10,7 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import { Card } from 'react-native-paper';
-import {
-	doc,
-	updateDoc,
-	arrayUnion,
-	arrayRemove,
-	getDocs,
-	collection,
-	getDoc,
-	setDoc
-} from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, arrayRemove, getDocs, collection, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebaseConfig';
 
 const SUVScreen = ({ navigation }) => {
@@ -61,7 +52,7 @@ const SUVScreen = ({ navigation }) => {
 		};
 
 		fetchVehicles();
-		fetchWishlist();
+		fetchWishlist(); 
 	}, []);
 
 	// Function to update the wishlist in Firestore
@@ -105,7 +96,7 @@ const SUVScreen = ({ navigation }) => {
 				}
 			});
 		} else {
-			Alert.alert('Please login first....');
+			Alert.alert('Please login first....')
 		}
 	};
 
@@ -151,7 +142,7 @@ const SUVScreen = ({ navigation }) => {
 	};
 
 	return (
-		<ScrollView style={styles.container}>
+		<ScrollView>
 			{vehicles.map((vehicle) => (
 				<RenderCars key={vehicle.id} item={vehicle} />
 			))}
@@ -162,11 +153,10 @@ const SUVScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#fff'
+		marginTop: StatusBar.currentHeight || 0
 	},
 	contentCardWrapper: {
-		marginVertical: 20,
-		backgroundColor: '#fff'
+		marginVertical: 20
 	},
 	contentCardsContainer: {
 		width: '100%'

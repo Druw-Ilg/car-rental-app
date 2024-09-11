@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, Image, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { collection, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { db, auth } from '../../firebase/firebaseConfig'; // Import your Firebase configuration
+import { db, auth } from '../../firebase/firebaseConfig'; 
+import { useRoute } from '@react-navigation/native';
+import { AuthContext } from '../utils/AuthContext';
 
-const BookingScreen = () => {
+const BookingScreen = ({route}) => {
+  const { vehicle } = route.params;
+ const {userData} = useContext(AuthContext)
   const user = auth.currentUser;
   const [cars, setCars] = useState([]);
-  const [selectedCar, setSelectedCar] = useState(null);
+  const [selectedCar, setSelectedCar] = useState(vehicle);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [fullName, setFullName] = useState(userData.name);
+  const [email, setEmail] = useState(userData.email);
+  const [phoneNumber, setPhoneNumber] = useState(userData.phoneNumber);
   const [loading, setLoading] = useState(false);
 
   const [isStartDatePickerVisible, setStartDatePickerVisibility] = useState(false);
@@ -48,7 +52,9 @@ const BookingScreen = () => {
         vehicleID: selectedCar.id,
         vendorId: selectedCar.vendorId,
         customerID: user.uid,
+        OwnerID: user.uid,
         bookingStatus: "pending",
+        price:selectedCar.price,
         startDate,
         endDate,
         fullName,
@@ -60,7 +66,8 @@ const BookingScreen = () => {
       const bookingID = docRef.id;
       await updateDoc(doc(db, 'booking', bookingID), { bookingID });
 
-      Alert.alert('Success', 'Booking Confirmed');
+      Alert.alert('Success', 'Booking Confirmed')
+      
     } catch (error) {
       console.error("Error confirming booking: ", error);
       Alert.alert('Error', 'There was a problem confirming your booking. Please try again.');

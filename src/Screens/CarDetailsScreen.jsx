@@ -15,17 +15,14 @@ import {
 import FontAwesome from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ImagesCaroussel } from '../components/UIComponents';
 import { getCars } from '../utils/backendFunc';
-import { auth } from '../../firebase/firebaseConfig';
 
 export const CarDetailsScreen = ({ route, navigation }) => {
 	const { vehicle } = route.params;
 	const [otherVehicles, setOtherVehicles] = useState([]);
-	const user = auth.currentUser;
 
 	useEffect(() => {
 		async function fetchData() {
 			const fetchedVehicles = await getCars();
-			// get all vehicles of the same type while excluding this particular vehicule
 			const similarVehicles = fetchedVehicles.filter(
 				(item) => item.type == vehicle.type && item.id !== vehicle.id
 			);
@@ -77,22 +74,18 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 						{vehicle.price} CFA/Jours
 					</Text>
 				</View>
-				{user && (
-					<TouchableOpacity
-						onPress={() => makePhoneCall()}
-						style={styles.contactBtn}
-					>
-						<FontAwesome name="phone" size={30} color="#fff" />
-					</TouchableOpacity>
-				)}
 
 				<TouchableOpacity
-					onPress={() => navigation.navigate('Booking')}
+					onPress={() => makePhoneCall()}
 					style={styles.contactBtn}
 				>
-					<Text style={[styles.subtitle, { color: '#fff', padding: 3 }]}>
-						Book Now
-					</Text>
+					<FontAwesome name="phone" size={30} color="#fff" />
+				</TouchableOpacity>
+				<TouchableOpacity
+					 onPress={() => navigation.navigate('Booking', { vehicle })}
+					style={styles.contactBtn}
+				>
+					<Text style={[styles.subtitle,{color:'#fff',padding:3}]}>Book Now</Text>
 				</TouchableOpacity>
 				<View>
 					<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
@@ -109,8 +102,7 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#fff'
+		flex: 1
 	},
 
 	title: {
