@@ -9,14 +9,14 @@ import {
 	Image,
 	ScrollView,
 	StatusBar,
-	ActivityIndicator,
-	TouchableOpacity
 } from 'react-native';
 import { Searchbar, Card, Title } from 'react-native-paper';
 import Header from '../components/Header';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ActivityIndicator } from 'react-native';
 
 const CustomSearchIcon = () => (
 	<View style={{ marginRight: 10 }}>
@@ -26,6 +26,8 @@ const CustomSearchIcon = () => (
 
 const HomeScreen = ({ navigation }) => {
 	const [vehicles, setVehicles] = useState([]);
+	const [filteredVehicles, setFilteredVehicles] = useState([]);
+	const [search, setSearch] = useState('');
 
 	const fetchVehicles = async () => {
 		const querySnapshot = await getDocs(collection(db, 'vehicles'));
@@ -40,12 +42,6 @@ const HomeScreen = ({ navigation }) => {
 			} catch (error) {
 				console.error(console.error());
 			}
-		} else {
-			return (
-				<Text style={{ textAlign: 'center' }}>
-					Pas de véhicule disponible pour le moment.
-				</Text>
-			);
 		}
 	};
 
@@ -55,6 +51,15 @@ const HomeScreen = ({ navigation }) => {
 
 		return () => clearInterval(intervalId); // Clear interval on unmount
 	}, []);
+
+	useEffect(() => {
+		const filtered = vehicles.filter(
+			(vehicle) =>
+				vehicle.brand.toLowerCase().includes(search.toLowerCase()) ||
+				vehicle.model.toLowerCase().includes(search.toLowerCase())
+		);
+		setFilteredVehicles(filtered);
+	}, [search, vehicles]);
 
 	const RenderCars = ({ item }) => {
 		// Limit car details to maximum 20 words
@@ -88,12 +93,10 @@ const HomeScreen = ({ navigation }) => {
 							{item.brand} {item.model} ({item.year})
 						</Text>
 						<Text style={styles.vehicleText}>{item.price} CFA/Jour</Text>
-						{/* <Text numberOfLines={1} style={styles.vehicleText}>
-							Details: {item.carDetails}
-						</Text> */}
+						
 						<Icon name="arrow-right" size={40} color="#000" />
 					</View>
-				</View>
+					</View>
 			</TouchableOpacity>
 		);
 	};
@@ -107,7 +110,7 @@ const HomeScreen = ({ navigation }) => {
 					<Searchbar
 						style={styles.searchBar}
 						placeholder="Une marque ou un modèle de véhicule.."
-						onPress={() => navigation.navigate('search')}
+					    onPress={() =>navigation.navigate('search')}
 						placeholderTextColor="#fff"
 						inputStyle={{ color: 'white' }}
 						icon={() => <CustomSearchIcon />}
@@ -149,19 +152,16 @@ const HomeScreen = ({ navigation }) => {
 						</Card>
 					</View>
 				</View>
-
+				
 				<View>
-					{vehicles.length > 0 ? (
-						vehicles.map((vehicle) => (
-							<RenderCars key={vehicle.id} item={vehicle} />
-						))
-					) : (
-						<ActivityIndicator
-							size="large"
-							color="#0000ff"
-							style={styles.loader}
-						/>
-					)}
+				{vehicles && vehicles.length > 0 ? (
+  vehicles.map((vehicle) => (
+    <RenderCars key={vehicle.id} item={vehicle} />
+  ))
+) : (
+  <ActivityIndicator color="blue"/>
+)}
+
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		marginTop: StatusBar.currentHeight || 0,
-		backgroundColor: '#fff'
+		backgroundColor:'#fff'
 	},
 	blueWrapper: {
 		backgroundColor: 'rgb(40 52 74)',
@@ -231,20 +231,19 @@ const styles = StyleSheet.create({
 	},
 	contentCardWrapper: {
 		marginVertical: 20,
-		marginHorizontal: 10,
-		borderRadius: 14,
-		backgroundColor: '#f5f5f5'
+		marginHorizontal:10,
+		borderRadius:14,
+		backgroundColor:'#f5f5f5',
 	},
 	contentCardsContainer: {
 		width: '100%',
 		flexDirection: 'row',
-
-		padding: 7
+		padding:7,
 	},
 	contentCardsCover: {
 		width: '60%',
 		height: 150,
-		borderRadius: 12
+		borderRadius:12,
 	},
 	contentCardDetails: {
 		justifyContent: 'space-around',

@@ -106,11 +106,16 @@ const HomeDrawer = () => {
 				component={VendorDashboard}
 				options={{ headerTitleAlign: 'center', headerTitle: 'Dashboard' }}
 			/>
+			<Stack.Screen
+				name="search"
+				component={SearchScreen}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Search' }}
+			/>
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
 			<Stack.Screen
 				name="Booking Details"
 				component={BookingDetails}
-				options={{ headerTitleAlign: 'center', headerTitle: 'Booking#123' }}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Booking' }}
 			/>
 			<Stack.Screen
 				name="Boosting Details"
@@ -125,11 +130,10 @@ const HomeDrawer = () => {
 				component={Settings}
 				options={{ headerTitle: '' }}
 			/>
-			<Stack.Screen name="Profile" component={UserProfileScreen} />
 			<Stack.Screen
-				name="search"
-				component={SearchScreen}
-				options={{ headerTitle: '' }}
+				name="Profile"
+				component={UserProfileScreen}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Profile' }}
 			/>
 		</Stack.Navigator>
 	);

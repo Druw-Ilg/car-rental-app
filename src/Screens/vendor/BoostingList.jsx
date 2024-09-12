@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
   },
   modalContainer: {
     height: '70%',
