@@ -5,6 +5,7 @@ import { AuthContext } from '../../utils/AuthContext';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
 import { useRoute } from '@react-navigation/native';
+import ChartBookings from './ChartBookings';
 
 const screenWidth = Dimensions.get('window').width;
 const check1 = 'jan 20'
@@ -168,17 +169,7 @@ const Analytics = ({route}) => {
         <Text style={styles.label}>Revenue</Text>
         <Text style={styles.value}>${revenue}</Text>
         <Text style={styles.subtext}>Last 3 months <Text style={styles.greenText}>+20%</Text></Text>
-        <LineChart
-          data={data}
-          width={screenWidth + 4}
-          height={200}
-          chartConfig={chartConfig}
-          bezier
-          withDots={false}
-          withVerticalLabels={true}
-          withHorizontalLabels={true}
-          style={styles.chart}
-        />
+       <ChartBookings/>
         <View style={styles.cardContainer}>
           <View style={styles.cardRow}>
             <View style={styles.card}>
