@@ -6,7 +6,7 @@ const BoostingList = ({ visible, onClose }) => {
   const [selectedPackage, setSelectedPackage] = useState(null);
   return (
     <Modal
-      animationType="slide"
+    
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
