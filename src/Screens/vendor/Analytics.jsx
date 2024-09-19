@@ -1,42 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import React, { useContext, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { AuthContext } from '../../utils/AuthContext';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase/firebaseConfig';
-import { useRoute } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import ChartBookings from './ChartBookings';
+import ChartRevenue from './ChartRevenue';
 
-const screenWidth = Dimensions.get('window').width;
-const check1 = 'jan 20'
-const check2 = 'jul 20'
-const check3 = 'Aug 20'
-
-
-const chartConfig = {
-  backgroundGradientFrom: '#ffffff',
-  backgroundGradientTo: '#ffffff',
-  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-  strokeWidth: 3,
-  barPercentage: 0.9,
-  useShadowColorFromDataset: false,
-  propsForBackgroundLines: {
-    stroke: 'transparent',
-  },
-  yLabelsOffset: 9999,
-  xLabelsOffset: -10,
-};
-
-const Analytics = ({route}) => {
-  const data = {
-    labels: [check1,check2,check3],
-    datasets: [
-      {
-        data: [20, 15, 18, ],
-        strokeWidth: 2,
-      },
-    ],
-  };
+const Analytics = ({ route }) => {
   const { userData } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -44,27 +15,32 @@ const Analytics = ({route}) => {
   const [mostRentedCarType, setMostRentedCarType] = useState('Unknown');
   const [revenue, setRevenue] = useState(0);
 
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const bookingsQuery = query(collection(db, "booking"), where("vendorId", "==", userData.uid));
-        const querySnapshot = await getDocs(bookingsQuery);
+  // Fetch bookings when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      const fetchBookings = async () => {
+        try {
+          const bookingsQuery = query(
+            collection(db, 'booking'),
+            where('vendorId', '==', userData.uid),
+            where('bookingStatus', '==', 'accepted')
+          );
 
-        const bookingsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+          const unsubscribe = onSnapshot(bookingsQuery, (querySnapshot) => {
+            const bookingsData = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }));
 
-        setBookings(bookingsData);
+            setBookings(bookingsData);
 
-        const calculateAverageTripLength = () => {
-          try {
+            // Calculate average trip length
             const totalDuration = bookingsData.reduce((acc, booking) => {
               const startDate = booking.startDate ? new Date(booking.startDate) : null;
               const endDate = booking.endDate ? new Date(booking.endDate) : null;
 
               if (startDate && endDate && endDate > startDate) {
-                const duration = (endDate - startDate) / (1000 * 60 * 60 * 24); 
+                const duration = (endDate - startDate) / (1000 * 60 * 60 * 24);
                 return acc + duration;
               }
 
@@ -73,74 +49,72 @@ const Analytics = ({route}) => {
 
             const average = bookingsData.length > 0 ? (totalDuration / bookingsData.length).toFixed(2) : '0';
             setAverageTripLength(average);
-          } catch (error) {
-            console.error("Error calculating average trip length: ", error);
-          }
-        };
 
-        const calculateRevenue = () => {
-          const acceptedBookings = bookingsData.filter(booking => booking.bookingStatus === "accepted");
-          const totalRevenue = acceptedBookings.reduce((sum, booking) => {
-            const startDate = booking.startDate ? new Date(booking.startDate) : null;
-            const endDate = booking.endDate ? new Date(booking.endDate) : null;
+            // Calculate revenue
+            const totalRevenue = bookingsData.reduce((sum, booking) => {
+              const startDate = booking.startDate ? new Date(booking.startDate) : null;
+              const endDate = booking.endDate ? new Date(booking.endDate) : null;
 
-            if (startDate && endDate && endDate > startDate && booking.price) {
-              const days = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1; // Include the last day in the count
-              return sum + booking.price * days;
-            }
-            return sum;
-          }, 0);
-          setRevenue(totalRevenue);
-        };
-        
-        calculateAverageTripLength();
-        calculateRevenue();
+              if (startDate && endDate && endDate > startDate && booking.price) {
+                const days = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1; // Include the last day
+                return sum + booking.price * days;
+              }
+              return sum;
+            }, 0);
 
-      } catch (error) {
-        console.error("Error fetching bookings: ", error);
-      }
-    };
+            setRevenue(totalRevenue);
+          });
 
-    const fetchVehicles = async () => {
-      try {
-        const vehiclesQuery = query(collection(db, "vehicles"), where("vendorId", "==", userData.uid));
-        const querySnapshot = await getDocs(vehiclesQuery);
-    
-        const vehiclesData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-    
-        setVehicles(vehiclesData);
-    
-        // Calculate most rented car type
-        const typeCounts = vehiclesData.reduce((acc, vehicle) => {
-          const type = vehicle.type || 'Unknown'; 
-          acc[type] = (acc[type] || 0) + 1;
-          return acc;
-        }, {});
-    
-        // Determine the most rented type
-        const sedansCount = typeCounts['Berline/Sedan'] || 0;
-        const suvsCount = typeCounts['Cross/SUV'] || 0;
-    
-        let mostRentedType;
-        if (sedansCount === suvsCount) {
-          mostRentedType = 'Both';
-        } else {
-          mostRentedType = Object.keys(typeCounts).reduce((a, b) => typeCounts[a] > typeCounts[b] ? a : b, 'Unknown');
+          // Cleanup the listener when the screen is unfocused
+          return () => unsubscribe();
+
+        } catch (error) {
+          console.error("Error fetching bookings: ", error);
         }
-        
-        setMostRentedCarType(mostRentedType);
-    
-      } catch (error) {
-        console.error("Error fetching vehicles: ", error);
-      }
-    };
+      };
 
-    fetchBookings();
-    fetchVehicles();
-  }, [userData.uid]);
+      const fetchVehicles = async () => {
+        try {
+          const vehiclesQuery = query(collection(db, "vehicles"), where("vendorId", "==", userData.uid));
+          const querySnapshot = await getDocs(vehiclesQuery);
+    
+          const vehiclesData = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+    
+          setVehicles(vehiclesData);
+    
+          // Calculate most rented car type
+          const typeCounts = vehiclesData.reduce((acc, vehicle) => {
+            const type = vehicle.type || 'Unknown';
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          }, {});
+    
+          // Determine the most rented type
+          const sedansCount = typeCounts['Berline/Sedan'] || 0;
+          const suvsCount = typeCounts['Cross/SUV'] || 0;
+    
+          let mostRentedType;
+          if (sedansCount === suvsCount) {
+            mostRentedType = 'Both';
+          } else {
+            mostRentedType = Object.keys(typeCounts).reduce((a, b) => typeCounts[a] > typeCounts[b] ? a : b, 'Unknown');
+          }
+          
+          setMostRentedCarType(mostRentedType);
+    
+        } catch (error) {
+          console.error("Error fetching vehicles: ", error);
+        }
+      };
+
+      fetchBookings();
+      fetchVehicles();
+
+    }, [userData.uid]) // Dependencies for useFocusEffect
+  );
 
   return (
     <ScrollView style={styles.container}>
@@ -151,17 +125,7 @@ const Analytics = ({route}) => {
           <Text style={styles.label}>Bookings</Text>
           <Text style={styles.value}>{bookings.length}</Text>
           <Text style={styles.subtext}>Last 3 months <Text style={styles.greenText}>+15%</Text></Text>
-          <LineChart
-            data={data}
-            width={screenWidth + 4}
-            height={180}
-            chartConfig={chartConfig}
-            bezier
-            withDots={false}
-            withVerticalLabels={true}
-            withHorizontalLabels={true}
-            style={styles.chart}
-          />
+          <ChartBookings />
         </View>
       )}
 
@@ -169,7 +133,7 @@ const Analytics = ({route}) => {
         <Text style={styles.label}>Revenue</Text>
         <Text style={styles.value}>${revenue}</Text>
         <Text style={styles.subtext}>Last 3 months <Text style={styles.greenText}>+20%</Text></Text>
-       <ChartBookings/>
+        <ChartRevenue />
         <View style={styles.cardContainer}>
           <View style={styles.cardRow}>
             <View style={styles.card}>
@@ -196,7 +160,6 @@ const Analytics = ({route}) => {
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
