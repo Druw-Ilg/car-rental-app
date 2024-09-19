@@ -1,5 +1,5 @@
 // import 'react-native-gesture-handler';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -25,12 +25,70 @@ import BookingDetails from './src/Screens/vendor/BookinDetails';
 import BoostingDetails from './src/Screens/vendor/BoostingDetails';
 import Settings from './src/Screens/vendor/Settings';
 import SearchScreen from './src/Screens/SearchScreen';
+import { PermissionsAndroid } from 'react-native';
+import { initializeApp } from 'firebase/app';
+import 'firebase/messaging';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 // const Tab = createBottomTabNavigator();
 
+const firebaseConfig = {
+	apiKey: 'AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY',
+	authDomain: 'car-rental-backend01.firebaseapp.com',
+	databaseURL:
+		'https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app',
+	projectId: 'car-rental-backend01',
+	storageBucket: 'car-rental-backend01.appspot.com',
+	messagingSenderId: '630901504141',
+	appId: '1:630901504141:web:36fc931b88ab779dc58ac4'
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+	firebase.initializeApp(firebaseConfig);
+}
+
+const messaging = firebase.messaging();
 const App = () => {
+	useEffect(() => {
+		PermissionsAndroid.request(
+			PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+		);
+		const requestPermission = async () => {
+			try {
+				await messaging.requestPermission();
+				const token = await messaging.getToken({
+					vapidKey:
+						'BDgaHjCEuCmSb46IiPHfw19eR7UhqhOaI5ksbZJTy4mKGyAkPBqeZVNCebJGhrNcoWB01u_6Z2XF1N0CIH9HpBw'
+				});
+				console.log('FCM Token:', token);
+			} catch (error) {
+				console.error('Notification permission denied', error);
+			}
+		};
+
+		requestPermission();
+
+		messaging.onMessage((payload) => {
+			console.log('Message received: ', payload);
+			// Handle the notification
+		});
+
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker
+				.register('/firebase-messaging-sw.js')
+				.then((registration) => {
+					console.log(
+						'Service Worker registered with scope:',
+						registration.scope
+					);
+				})
+				.catch((error) => {
+					console.error('Service Worker registration failed:', error);
+				});
+		}
+	});
 	return (
 		<MenuProvider>
 			<AuthProvider>

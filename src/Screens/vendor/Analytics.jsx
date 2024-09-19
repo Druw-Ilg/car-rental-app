@@ -47,56 +47,6 @@ const Analytics = ({ route }) => {
 							return acc;
 						}, 0);
 
-<<<<<<< HEAD
-						const average =
-							bookingsData.length > 0
-								? (totalDuration / bookingsData.length).toFixed(2)
-								: '0';
-						setAverageTripLength(average);
-					} catch (error) {
-						console.error('Error calculating average trip length: ', error);
-					}
-				};
-
-				const calculateRevenue = () => {
-					const acceptedBookings = bookingsData.filter(
-						(booking) => booking.bookingStatus === 'accepted'
-					);
-					const totalRevenue = acceptedBookings.reduce((sum, booking) => {
-						const startDate = booking.startDate
-							? new Date(booking.startDate)
-							: null;
-						const endDate = booking.endDate ? new Date(booking.endDate) : null;
-
-						if (startDate && endDate && endDate > startDate && booking.price) {
-							const days = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1; // Include the last day in the count
-							return sum + booking.price * days;
-						}
-						return sum;
-					}, 0);
-					setRevenue(totalRevenue);
-				};
-
-				calculateAverageTripLength();
-				calculateRevenue();
-			} catch (error) {
-				console.error('Error fetching bookings: ', error);
-			}
-		};
-
-		const fetchVehicles = async () => {
-			try {
-				const vehiclesQuery = query(
-					collection(db, 'vehicles'),
-					where('vendorId', '==', userData.uid)
-				);
-				const querySnapshot = await getDocs(vehiclesQuery);
-
-				const vehiclesData = querySnapshot.docs.map((doc) => ({
-					id: doc.id,
-					...doc.data()
-				}));
-=======
             const average = bookingsData.length > 0 ? (totalDuration / bookingsData.length).toFixed(2) : '0';
             setAverageTripLength(average);
 
@@ -165,100 +115,9 @@ const Analytics = ({ route }) => {
 
     }, [userData.uid]) // Dependencies for useFocusEffect
   );
->>>>>>> 9b481b85ae3e2b21e9ddbe7f9abd6f4a63a0763a
 
 				setVehicles(vehiclesData);
 
-<<<<<<< HEAD
-				// Calculate most rented car type
-				const typeCounts = vehiclesData.reduce((acc, vehicle) => {
-					const type = vehicle.type || 'Unknown';
-					acc[type] = (acc[type] || 0) + 1;
-					return acc;
-				}, {});
-
-				// Determine the most rented type
-				const sedansCount = typeCounts['Berline/Sedan'] || 0;
-				const suvsCount = typeCounts['Cross/SUV'] || 0;
-
-				let mostRentedType;
-				if (sedansCount === suvsCount) {
-					mostRentedType = 'Both';
-				} else {
-					mostRentedType = Object.keys(typeCounts).reduce(
-						(a, b) => (typeCounts[a] > typeCounts[b] ? a : b),
-						'Unknown'
-					);
-				}
-
-				setMostRentedCarType(mostRentedType);
-			} catch (error) {
-				console.error('Error fetching vehicles: ', error);
-			}
-		};
-
-		fetchBookings();
-		fetchVehicles();
-	}, [userData.uid]);
-
-	return (
-		<ScrollView style={styles.container}>
-			<Text style={styles.heading}>How you&apos;re doing</Text>
-
-			{bookings.length > 0 && (
-				<View style={styles.section}>
-					<Text style={styles.label}>Bookings</Text>
-					<Text style={styles.value}>{bookings.length}</Text>
-					<Text style={styles.subtext}>
-						Last 3 months <Text style={styles.greenText}>+15%</Text>
-					</Text>
-					<LineChart
-						data={data}
-						width={screenWidth + 4}
-						height={180}
-						chartConfig={chartConfig}
-						bezier
-						withDots={false}
-						withVerticalLabels={true}
-						withHorizontalLabels={true}
-						style={styles.chart}
-					/>
-				</View>
-			)}
-
-			<View style={styles.section}>
-				<Text style={styles.label}>Revenue</Text>
-				<Text style={styles.value}>${revenue}</Text>
-				<Text style={styles.subtext}>
-					Last 3 months <Text style={styles.greenText}>+20%</Text>
-				</Text>
-				<ChartBookings />
-				<View style={styles.cardContainer}>
-					<View style={styles.cardRow}>
-						<View style={styles.card}>
-							<Text style={styles.labelCards}>Cars listed</Text>
-							<Text style={styles.valueCards}>{vehicles.length}</Text>
-						</View>
-						<View style={styles.card}>
-							<Text style={styles.labelCards}>Most rented car type</Text>
-							<Text style={styles.valueCards}>{mostRentedCarType}</Text>
-						</View>
-					</View>
-					<View style={styles.cardRow}>
-						<View style={styles.card}>
-							<Text style={styles.labelCards}>Average trip length</Text>
-							<Text style={styles.valueCards}>{averageTripLength} days </Text>
-						</View>
-						<View style={styles.card}>
-							<Text style={styles.labelCards}>Total Bookings</Text>
-							<Text style={styles.valueCards}>{bookings.length}</Text>
-						</View>
-					</View>
-				</View>
-			</View>
-		</ScrollView>
-	);
-=======
       {bookings.length > 0 && (
         <View style={styles.section}>
           <Text style={styles.label}>Bookings</Text>
@@ -298,7 +157,6 @@ const Analytics = ({ route }) => {
       </View>
     </ScrollView>
   );
->>>>>>> 9b481b85ae3e2b21e9ddbe7f9abd6f4a63a0763a
 };
 
 const styles = StyleSheet.create({
