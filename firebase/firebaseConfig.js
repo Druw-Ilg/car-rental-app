@@ -2,7 +2,6 @@
 // Import the functions you need from the SDKs you need
 import firebase from 'firebase/compat';
 import { initializeApp } from 'firebase/app';
-import 'firebase/messaging';
 // TODO: Add SDKs for Firebase products that you want to use
 
 import {
@@ -14,7 +13,7 @@ import {
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getMessaging } from 'firebase/messaging';
+// import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY',
@@ -33,22 +32,6 @@ if (!firebase.apps.length) {
 }
 
 const app = initializeApp(firebaseConfig);
-
-export const messaging = getMessaging(app);
-
-const requestNotificationPermission = async () => {
-	try {
-		await messaging.requestPermission();
-		const token = await messaging.getToken({
-			vapidKey:
-				'BDgaHjCEuCmSb46IiPHfw19eR7UhqhOaI5ksbZJTy4mKGyAkPBqeZVNCebJGhrNcoWB01u_6Z2XF1N0CIH9HpBw'
-		});
-		console.log('FCM Token:', token);
-		return token;
-	} catch (error) {
-		console.error('Error getting permission for notifications', error);
-	}
-};
 
 // use a local emulator on dev
 // __DEV__ &&
