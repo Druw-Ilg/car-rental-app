@@ -14,37 +14,41 @@ import {
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
-	apiKey: "AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY",
-	authDomain: "car-rental-backend01.firebaseapp.com",
-	databaseURL: "https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app",
-	projectId: "car-rental-backend01",
-	storageBucket: "car-rental-backend01.appspot.com",
-	messagingSenderId: "630901504141",
-	appId: "1:630901504141:web:36fc931b88ab779dc58ac4"
-  };
+	apiKey: 'AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY',
+	authDomain: 'car-rental-backend01.firebaseapp.com',
+	databaseURL:
+		'https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app',
+	projectId: 'car-rental-backend01',
+	storageBucket: 'car-rental-backend01.appspot.com',
+	messagingSenderId: '630901504141',
+	appId: '1:630901504141:web:36fc931b88ab779dc58ac4'
+};
 
 // Initialize Firebase
 if (!firebase.apps.length) {
 	firebase.initializeApp(firebaseConfig);
 }
 
-
 const app = initializeApp(firebaseConfig);
 
-const messaging = firebase.messaging();
+export const messaging = getMessaging(app);
 
 const requestNotificationPermission = async () => {
 	try {
-	  await messaging.requestPermission();
-	  const token = await messaging.getToken({ vapidKey: 'BDgaHjCEuCmSb46IiPHfw19eR7UhqhOaI5ksbZJTy4mKGyAkPBqeZVNCebJGhrNcoWB01u_6Z2XF1N0CIH9HpBw' });
-	  console.log('FCM Token:', token);
-	  return token;
+		await messaging.requestPermission();
+		const token = await messaging.getToken({
+			vapidKey:
+				'BDgaHjCEuCmSb46IiPHfw19eR7UhqhOaI5ksbZJTy4mKGyAkPBqeZVNCebJGhrNcoWB01u_6Z2XF1N0CIH9HpBw'
+		});
+		console.log('FCM Token:', token);
+		return token;
 	} catch (error) {
-	  console.error('Error getting permission for notifications', error);
+		console.error('Error getting permission for notifications', error);
 	}
-  };
+};
 
 // use a local emulator on dev
 // __DEV__ &&
