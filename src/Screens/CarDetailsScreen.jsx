@@ -82,10 +82,12 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 					<FontAwesome name="phone" size={30} color="#fff" />
 				</TouchableOpacity>
 				<TouchableOpacity
-					 onPress={() => navigation.navigate('Booking', { vehicle })}
+					onPress={() => navigation.navigate('Booking', { vehicle })}
 					style={styles.contactBtn}
 				>
-					<Text style={[styles.subtitle,{color:'#fff',padding:3}]}>Book Now</Text>
+					<Text style={[styles.subtitle, { color: '#fff', padding: 3 }]}>
+						Book Now
+					</Text>
 				</TouchableOpacity>
 				<View>
 					<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
@@ -99,7 +101,6 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 		</SafeAreaView>
 	);
 };
-
 const styles = StyleSheet.create({
 	container: {
 		flex: 1

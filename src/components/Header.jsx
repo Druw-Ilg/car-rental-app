@@ -1,22 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { TouchableOpacity, StyleSheet, View } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { StyleSheet, View } from 'react-native';
 
 const Header = (props) => {
 	const { navigation } = props;
 
-	return (
-		<View style={styles.wrapper}>
-			<TouchableOpacity
-				onPress={() => navigation.openDrawer()}
-				style={{ marginTop: 20 }}
-			>
-				<Icon name="segment" size={50} color="#fff" />
-			</TouchableOpacity>
-		</View>
-	);
+	return <View style={styles.wrapper}></View>;
 };
 
 const styles = StyleSheet.create({
