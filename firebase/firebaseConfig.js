@@ -13,16 +13,18 @@ import {
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
+// import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
-	apiKey: "AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY",
-	authDomain: "car-rental-backend01.firebaseapp.com",
-	databaseURL: "https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app",
-	projectId: "car-rental-backend01",
-	storageBucket: "car-rental-backend01.appspot.com",
-	messagingSenderId: "630901504141",
-	appId: "1:630901504141:web:36fc931b88ab779dc58ac4"
-  };
+	apiKey: 'AIzaSyCiJqMxVSy-ww5xVMTr2cYBkUnemVYI7bY',
+	authDomain: 'car-rental-backend01.firebaseapp.com',
+	databaseURL:
+		'https://car-rental-backend01-default-rtdb.europe-west1.firebasedatabase.app',
+	projectId: 'car-rental-backend01',
+	storageBucket: 'car-rental-backend01.appspot.com',
+	messagingSenderId: '630901504141',
+	appId: '1:630901504141:web:36fc931b88ab779dc58ac4'
+};
 
 // Initialize Firebase
 if (!firebase.apps.length) {

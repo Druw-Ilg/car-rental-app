@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import {
 	View,
@@ -10,7 +12,16 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import { Card } from 'react-native-paper';
-import { doc, updateDoc, arrayUnion, arrayRemove, getDocs, collection, getDoc, setDoc } from 'firebase/firestore';
+import {
+	doc,
+	updateDoc,
+	arrayUnion,
+	arrayRemove,
+	getDocs,
+	collection,
+	getDoc,
+	setDoc
+} from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebaseConfig';
 
 const SUVScreen = ({ navigation }) => {
@@ -52,7 +63,7 @@ const SUVScreen = ({ navigation }) => {
 		};
 
 		fetchVehicles();
-		fetchWishlist(); 
+		fetchWishlist();
 	}, []);
 
 	// Function to update the wishlist in Firestore
@@ -96,7 +107,7 @@ const SUVScreen = ({ navigation }) => {
 				}
 			});
 		} else {
-			Alert.alert('Please login first....')
+			Alert.alert('Please login first....');
 		}
 	};
 

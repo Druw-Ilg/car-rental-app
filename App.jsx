@@ -1,84 +1,193 @@
 // import 'react-native-gesture-handler';
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { MenuProvider } from 'react-native-popup-menu';
+
+//******** Screens ************/
 import HomeScreen from './src/Screens/HomeScreen';
 import SUVScreen from './src/Screens/SUVScreen';
 import SedanScreen from './src/Screens/SedanScreen';
 import CarDetailsScreen from './src/Screens/CarDetailsScreen';
 import SignUpScreen from './src/Screens/SignUpScreen';
-
-import CustomDrawerContent from './src/components/CustomDrawerContent';
-import { AuthProvider, AuthContext } from './src/utils/AuthContext';
-import VendorDrawerContent from './src/components/VendorDrawerContent';
-import UserDrawerContent from './src/components/UserDrawerContent';
 import VendorProfileScreen from './src/Screens/vendor/VendorProfileScreen';
 import UserProfileScreen from './src/Screens/member/UserProfileScreen';
 import PasswordRecoveryScreen from './src/Screens/PasswordRecoveryScreen';
 import BookingScreen from './src/Screens/BookingScreen';
 import BookingRequests from './src/Screens/vendor/BookingRequests';
 import VendorDashboard from './src/Screens/vendor/VendorDashboard';
-import { MenuProvider } from 'react-native-popup-menu';
 import BookingDetails from './src/Screens/vendor/BookinDetails';
 import BoostingDetails from './src/Screens/vendor/BoostingDetails';
 import Settings from './src/Screens/vendor/Settings';
 import SearchScreen from './src/Screens/SearchScreen';
 
+//**** Components *********/
+import CustomDrawerContent from './src/components/CustomDrawerContent';
+import VendorDrawerContent from './src/components/VendorDrawerContent';
+import UserDrawerContent from './src/components/UserDrawerContent';
+
+//****** Utils ************/
+import { AuthProvider, AuthContext } from './src/utils/AuthContext';
+import {
+	AntDesign,
+	MaterialCommunityIcons,
+	Ionicons,
+	FontAwesome
+} from 'react-native-vector-icons';
+
+const Tab = createBottomTabNavigator();
+const screenOptions = {
+	headerShown: false,
+	tabBarInactiveTintColor: '#000',
+	tabBarShowlabel: false,
+	tabBarStyle: {
+		backgroundColor: '#fff',
+		borderTopWidth: 0,
+		elevation: 0
+	}
+};
 const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const App = () => {
 	return (
 		<MenuProvider>
-		<AuthProvider>
-			<NavigationContainer>
-				<MainStack />
-			</NavigationContainer>
-		</AuthProvider>
+			<AuthProvider>
+				<NavigationContainer>
+					<MainStack />
+				</NavigationContainer>
+			</AuthProvider>
 		</MenuProvider>
 	);
 };
 
-// identify the menu to display when users are loged in or not
 const MainStack = () => {
-	const { userData } = useContext(AuthContext);
 	return (
-		<Drawer.Navigator
-			drawerContent={(props) =>
-				userData && userData.isVendor ? (
-					<VendorDrawerContent {...props} />
-				) : userData && !userData.isVendor ? (
-					<UserDrawerContent {...props} />
-				) : (
-					<CustomDrawerContent {...props} />
-				)
-			}
-		>
-			<Drawer.Screen
-				name="HomeDrawer"
-				component={HomeDrawer}
-				options={{ headerShown: false }}
+		<Tab.Navigator screenOptions={screenOptions}>
+			<Tab.Screen
+				name="Home"
+				component={HomeStack}
+				options={{
+					tabBarShowLabel: false,
+					tabBarIcon: ({ focused }) => {
+						return focused ? (
+							<MaterialCommunityIcons
+								name="home-circle"
+								size={32}
+								color={'rgb(40 52 74)'}
+							/>
+						) : (
+							<AntDesign name="home" size={32} color={'#ccc'} />
+						);
+					}
+				}}
 			/>
-		</Drawer.Navigator>
+			<Tab.Screen
+				name="Search"
+				component={SearchScreen}
+				options={{
+					tabBarShowLabel: false,
+					tabBarIcon: ({ focused }) => {
+						return focused ? (
+							<Ionicons
+								name="search-circle"
+								size={32}
+								color={'rgb(40 52 74)'}
+							/>
+						) : (
+							<Ionicons name="search" size={32} color={'#ccc'} />
+						);
+					}
+				}}
+			/>
+
+			<Tab.Screen
+				name="User"
+				component={UserStack}
+				options={{
+					tabBarShowLabel: false,
+					tabBarIcon: ({ focused }) => {
+						return focused ? (
+							<FontAwesome
+								name="user-circle"
+								size={32}
+								color={'rgb(40 52 74)'}
+							/>
+						) : (
+							<FontAwesome name="user-o" size={32} color={'#ccc'} />
+						);
+					}
+				}}
+			/>
+		</Tab.Navigator>
 	);
 };
 
-const HomeDrawer = () => {
+const HomeStack = () => {
 	return (
 		<Stack.Navigator>
 			<Stack.Screen
-				name="Home"
+				name="HomeScreen"
 				component={HomeScreen}
 				options={{ headerShown: false }}
 			/>
-
 			<Stack.Screen name="SUV" component={SUVScreen} />
 			<Stack.Screen name="Sedan" component={SedanScreen} />
 			<Stack.Screen
 				name="CarDetails"
 				component={CarDetailsScreen}
 				options={{ title: '' }}
+			/>
+		</Stack.Navigator>
+	);
+};
+
+const UserStack = () => {
+	// identify the menu to display when users are loged in or not
+	const { userData } = useContext(AuthContext);
+
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="UserScreen"
+				component={
+					userData && userData.isVendor
+						? VendorDrawerContent
+						: userData && !userData.isVendor
+							? UserDrawerContent
+							: CustomDrawerContent
+				}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="Tableau de bord"
+				component={VendorDashboard}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Dashboard' }}
+			/>
+
+			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
+			<Stack.Screen
+				name="Booking Details"
+				component={BookingDetails}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Booking' }}
+			/>
+			<Stack.Screen
+				name="Boosting Details"
+				component={BoostingDetails}
+				options={{
+					headerTitleAlign: 'center',
+					headerTitle: 'Boosting Your List'
+				}}
+			/>
+			<Stack.Screen
+				name="Settings"
+				component={Settings}
+				options={{ headerTitle: '' }}
+			/>
+			<Stack.Screen
+				name="Profile"
+				component={UserProfileScreen}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Profile' }}
 			/>
 			<Stack.Screen name="Connexion" component={SignUpScreen} />
 			<Stack.Screen
@@ -98,18 +207,6 @@ const HomeDrawer = () => {
 				component={BookingRequests}
 				options={{ title: '' }}
 			/>
-			
-			<Stack.Screen name="Tableau de bord" component={VendorDashboard} 
-			options={{headerTitleAlign:'center',headerTitle:'Dashboard'}}/>
-			<Stack.Screen name="search" component={SearchScreen} 
-			options={{headerTitleAlign:'center',headerTitle:'Search'}}/>
-			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
-			<Stack.Screen name="Booking Details" component={BookingDetails} 
-		       options={{headerTitleAlign:'center',headerTitle:'Booking'}}/>
-			<Stack.Screen name="Boosting Details" component={BoostingDetails} 
-		       options={{headerTitleAlign:'center',headerTitle:'Boosting Your List'}}/>
-			<Stack.Screen name="Settings" component={Settings} options={{headerTitle:''}}/>
-			<Stack.Screen name="Profile" component={UserProfileScreen}    options={{headerTitleAlign:'center',headerTitle:'Profile'}}/>
 		</Stack.Navigator>
 	);
 };
