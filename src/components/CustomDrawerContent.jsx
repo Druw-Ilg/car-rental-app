@@ -3,6 +3,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { MaterialIcons, AntDesign } from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CustomDrawerContent = ({ navigation }) => {
@@ -10,7 +11,6 @@ const CustomDrawerContent = ({ navigation }) => {
 		navigation.navigate(screenName);
 	};
 
-	// monitorStateChanged();
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity
@@ -19,6 +19,25 @@ const CustomDrawerContent = ({ navigation }) => {
 			>
 				<Text style={styles.linkText}>
 					<Icon name="login" size={30} color="#000" /> Se connecter
+				</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('OtherSettings')}
+			>
+				<Text style={styles.linkText}>
+					<AntDesign name="setting" size={30} color="#000" /> Préférences
+				</Text>
+			</TouchableOpacity>
+
+			<TouchableOpacity
+				style={styles.link}
+				onPress={() => handleLinkPress('OtherSettings')}
+			>
+				<Text style={styles.linkText}>
+					<MaterialIcons name="support-agent" size={30} color="#000" /> Service
+					client
 				</Text>
 			</TouchableOpacity>
 
@@ -37,7 +56,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 20,
 		marginVertical: 5,
-		borderRadius: 5
+		borderBottomWidth: 0.5,
+		backgroundColor: '#f5f5f5'
 	},
 	linkText: {
 		color: '#000',

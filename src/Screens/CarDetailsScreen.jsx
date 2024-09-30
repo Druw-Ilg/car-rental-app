@@ -15,10 +15,26 @@ import {
 import FontAwesome from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ImagesCaroussel } from '../components/UIComponents';
 import { getCars } from '../utils/backendFunc';
+import * as SecureStore from 'expo-secure-store';
 
-export const CarDetailsScreen = ({ route, navigation }) => {
+const CarDetailsScreen = ({ route, navigation }) => {
+	const [isLogedIn, setIsLogedIn] = useState(false);
 	const { vehicle } = route.params;
 	const [otherVehicles, setOtherVehicles] = useState([]);
+
+	// get the user data from SecureStore session
+	useEffect(() => {
+		async function getUserData() {
+			const user = await SecureStore.getItemAsync('user');
+
+			if (user) {
+				setIsLogedIn(true);
+			} else {
+				setIsLogedIn(false);
+			}
+		}
+		getUserData();
+	}, []);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -54,7 +70,7 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 					style={styles.contentCardsCover}
 				/>
 				<View>
-					<Text style={styles.vehicleBrand}>
+					<Text style={styles.otherVehiclesBrand}>
 						{item.brand} {item.model} {item.year}
 					</Text>
 				</View>
@@ -71,7 +87,7 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 						{vehicle.brand} {vehicle.model} ({vehicle.year})
 					</Text>
 					<Text style={[styles.detailText, styles.price]}>
-						{vehicle.price} CFA/Jours
+						{vehicle.price} CFA/Jour
 					</Text>
 				</View>
 
@@ -81,15 +97,18 @@ export const CarDetailsScreen = ({ route, navigation }) => {
 				>
 					<FontAwesome name="phone" size={30} color="#fff" />
 				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={() => navigation.navigate('Booking', { vehicle })}
-					style={styles.contactBtn}
-				>
-					<Text style={[styles.subtitle, { color: '#fff', padding: 3 }]}>
-						Book Now
-					</Text>
-				</TouchableOpacity>
-				<View>
+				{isLogedIn && (
+					<TouchableOpacity
+						onPress={() => navigation.navigate('Booking', { vehicle })}
+						style={styles.contactBtn}
+					>
+						<Text style={[styles.txtBtn, { color: '#fff', padding: 3 }]}>
+							Book Now
+						</Text>
+					</TouchableOpacity>
+				)}
+
+				<View style={{ marginVertical: 20 }}>
 					<Text style={styles.subtitle}>Ça pourrait aussi vous plaire...</Text>
 					<ScrollView horizontal={true}>
 						{otherVehicles.map((otherVehicle) => (
@@ -111,11 +130,15 @@ const styles = StyleSheet.create({
 		padding: 12,
 		fontWeight: 'bold'
 	},
-	subtitle: {
+	txtBtn: {
 		fontSize: 17,
 		fontWeight: '600',
-		paddingHorizontal: 12,
-		marginVertical: 0
+		paddingHorizontal: 12
+	},
+	subtitle: {
+		fontSize: 20,
+		fontWeight: '600',
+		paddingHorizontal: 12
 	},
 
 	detailText: {
@@ -148,10 +171,9 @@ const styles = StyleSheet.create({
 		height: 200,
 		borderRadius: 6
 	},
-	vehicleBrand: {
-		fontSize: 14,
-		paddingHorizontal: 10,
-		fontWeight: 'bold'
+	otherVehiclesBrand: {
+		fontSize: 17,
+		paddingHorizontal: 10
 	}
 });
 

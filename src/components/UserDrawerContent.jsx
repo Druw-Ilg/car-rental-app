@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
-//  drawer Content
 
 import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
@@ -14,7 +13,7 @@ import { AuthContext } from '../utils/AuthContext';
 import * as SecureStore from 'expo-secure-store';
 import CustomDrawerContent from './CustomDrawerContent';
 
-const VendorMenu = ({ navigation, handleLinkPress }) => {
+const UserMenu = ({ navigation, handleLinkPress }) => {
 	const { userData, logout } = useContext(AuthContext);
 	const [avatar, setAvatar] = useState(null);
 
@@ -61,20 +60,20 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 				)}
 			</TouchableOpacity>
 
-			
-			
-			
 			<TouchableOpacity
 				style={styles.link}
-				onPress={() => handleLinkPress('Settings')}
+				onPress={() => handleLinkPress('UserSettings')}
 			>
 				<Text style={styles.linkText}>
-					<AntIcon name="setting" size={30} color="#000" /> Settings
+					<AntIcon name="setting" size={30} color="#000" /> Préférences
 				</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.link} onPress={() => logout(navigation)}>
-				<Text style={styles.linkText}>
-					<Icon name="logout" size={30} color="#000" /> Se déconnecter
+			<TouchableOpacity
+				style={styles.logoutButton}
+				onPress={() => logout(navigation)}
+			>
+				<Text style={styles.logoutText}>
+					<Icon name="logout" size={20} color="#000" /> Se déconnecter
 				</Text>
 			</TouchableOpacity>
 		</>
@@ -96,9 +95,7 @@ const UserDrawerContent = ({ navigation }) => {
 			if (user) {
 				setIsLogedIn(true);
 			} else {
-				console.log(
-					"Couldn't log in the vendor. <br> From VendorDrawerContent l-45: "
-				);
+				console.log('Aucun utilisateur connecté!');
 				setIsLogedIn(false);
 			}
 		}
@@ -108,7 +105,7 @@ const UserDrawerContent = ({ navigation }) => {
 	return (
 		<View style={styles.container}>
 			{isLogedIn ? (
-				<VendorMenu navigation={navigation} handleLinkPress={handleLinkPress} />
+				<UserMenu navigation={navigation} handleLinkPress={handleLinkPress} />
 			) : (
 				<CustomDrawerContent />
 			)}
@@ -128,7 +125,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 20,
 		marginVertical: 5,
-		borderRadius: 5
+		borderBottomWidth: 0.5,
+		backgroundColor: '#f5f5f5'
 	},
 	linkText: {
 		color: '#000',
@@ -139,6 +137,18 @@ const styles = StyleSheet.create({
 		height: 50,
 		borderRadius: 12,
 		marginRight: 10
+	},
+	logoutButton: {
+		backgroundColor: '#E0E0E0',
+		borderRadius: 8,
+		paddingVertical: 15,
+		alignItems: 'center',
+		marginVertical: 30
+	},
+	logoutText: {
+		fontSize: 16,
+		fontWeight: 'bold',
+		color: '#333'
 	}
 });
 

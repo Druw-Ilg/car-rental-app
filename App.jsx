@@ -5,22 +5,26 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MenuProvider } from 'react-native-popup-menu';
 
-//******** Screens ************/
-import HomeScreen from './src/Screens/HomeScreen';
-import SUVScreen from './src/Screens/SUVScreen';
-import SedanScreen from './src/Screens/SedanScreen';
-import CarDetailsScreen from './src/Screens/CarDetailsScreen';
-import SignUpScreen from './src/Screens/SignUpScreen';
-import VendorProfileScreen from './src/Screens/vendor/VendorProfileScreen';
-import UserProfileScreen from './src/Screens/member/UserProfileScreen';
-import PasswordRecoveryScreen from './src/Screens/PasswordRecoveryScreen';
-import BookingScreen from './src/Screens/BookingScreen';
-import BookingRequests from './src/Screens/vendor/BookingRequests';
-import VendorDashboard from './src/Screens/vendor/VendorDashboard';
-import BookingDetails from './src/Screens/vendor/BookinDetails';
-import BoostingDetails from './src/Screens/vendor/BoostingDetails';
-import Settings from './src/Screens/vendor/Settings';
-import SearchScreen from './src/Screens/SearchScreen';
+//////// Screens //////////
+import {
+	HomeScreen,
+	SUVScreen,
+	SedanScreen,
+	CarDetailsScreen,
+	SignUpScreen,
+	VendorDashboard,
+	VendorProfileScreen,
+	UserProfileScreen,
+	PasswordRecoveryScreen,
+	BookingDetails,
+	BookingScreen,
+	BookingRequests,
+	BoostingDetails,
+	VendorSettings,
+	OtherSettings,
+	UserSettings,
+	SearchScreen
+} from './src/Screens/';
 
 //**** Components *********/
 import CustomDrawerContent from './src/components/CustomDrawerContent';
@@ -180,9 +184,19 @@ const UserStack = () => {
 				}}
 			/>
 			<Stack.Screen
-				name="Settings"
-				component={Settings}
+				name="VendorSettings"
+				component={VendorSettings}
 				options={{ headerTitle: '' }}
+			/>
+			<Stack.Screen
+				name="UserSettings"
+				component={UserSettings}
+				options={{ headerTitle: '' }}
+			/>
+			<Stack.Screen
+				name="OtherSettings"
+				component={OtherSettings}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
 				name="Profile"
