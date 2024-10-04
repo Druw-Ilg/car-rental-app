@@ -177,7 +177,7 @@ const Analytics = ({ route }) => {
 					<View style={styles.cardRow}>
 						<View style={styles.card}>
 							<Text style={styles.labelCards}>Average trip length</Text>
-							<Text style={styles.valueCards}>{averageTripLength} days </Text>
+							<Text style={styles.valueCards}>{averageTripLength}{bookings.length}/days</Text>
 						</View>
 						<View style={styles.card}>
 							<Text style={styles.labelCards}>Total Bookings</Text>

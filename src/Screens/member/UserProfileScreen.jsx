@@ -22,6 +22,7 @@ import { auth,db, } from '../../../firebase/firebaseConfig';
 import { AuthContext } from '../../utils/AuthContext';
 import {
 	collection,
+	onSnapshot,
 	getDoc,
 	query,
 	setDoc,
@@ -66,40 +67,66 @@ const WishlistTab = ({ user }) => {
 
 	useEffect(() => {
 		const fetchWishlist = async () => {
-			try {
-				const user = auth.currentUser;
-				if (user) {
-					const wishlistDocRef = doc(db, 'wishlist', user.uid);
-					const wishlistDoc = await getDoc(wishlistDocRef);
-					if (wishlistDoc.exists()) {
-						const wishlistIds = wishlistDoc.data().vehicleID || [];
-						setWishlist(wishlistIds);
-
-						// Fetch the details for each vehicle in the wishlist
-						const vehiclePromises = wishlistIds.map(async (vehicleId) => {
-							const vehicleDoc = await getDoc(doc(db, 'vehicles', vehicleId));
-							if (vehicleDoc.exists()) {
-								return { id: vehicleDoc.id, ...vehicleDoc.data() };
-							}
-							return null;
-						});
-
-						// Wait for all vehicle details to be fetched
-						const vehicles = await Promise.all(vehiclePromises);
-						setVehicleDetails(vehicles.filter((vehicle) => vehicle !== null));
-					} else {
-						console.log('No wishlist found for the user.');
-					}
-				} else {
-					console.log('No user is logged in.');
-				}
-			} catch (error) {
-				console.error('Error fetching wishlist: ', error);
+		  try {
+			const user = auth.currentUser;
+			if (user) {
+			  const wishlistDocRef = doc(db, 'wishlist', user.uid);
+			  const wishlistDoc = await getDoc(wishlistDocRef);
+			  if (wishlistDoc.exists()) {
+				const wishlistIds = wishlistDoc.data().vehicleID || [];
+				setWishlist(wishlistIds);
+	  
+				// Fetch the details for each vehicle in the wishlist
+				const vehiclePromises = wishlistIds.map(async (vehicleId) => {
+				  const vehicleDoc = await getDoc(doc(db, 'vehicles', vehicleId));
+				  if (vehicleDoc.exists()) {
+					const vehicleData = { id: vehicleDoc.id, ...vehicleDoc.data() };
+	  
+					// Listen to booking status changes in real-time
+					const bookingQueryRef = query(
+					  collection(db, 'booking'),
+					  where('vehicleID', '==', vehicleId)
+					);
+	  
+					onSnapshot(bookingQueryRef, (bookingSnapshot) => {
+					  let bookingStatus = 'Available';
+					  if (!bookingSnapshot.empty) {
+						const bookingData = bookingSnapshot.docs[0].data();
+						bookingStatus = bookingData.bookingStatus || 'Available';
+					  }
+	  
+					  // Update the vehicle details with the booking status
+					  setVehicleDetails((prevVehicleDetails) => {
+						return prevVehicleDetails.map((vehicle) => 
+						  vehicle.id === vehicleId ? { ...vehicle, bookingStatus } : vehicle
+						);
+					  });
+					});
+	  
+					// Return the initial vehicle data, real-time updates will modify it later
+					return { ...vehicleData, bookingStatus: 'Available' }; 
+				  }
+				  return null;
+				});
+	  
+				// Wait for all vehicle details to be fetched initially
+				const vehicles = await Promise.all(vehiclePromises);
+				setVehicleDetails(vehicles.filter((vehicle) => vehicle !== null));
+			  } else {
+				console.log('No wishlist found for the user.');
+			  }
+			} else {
+			  console.log('No user is logged in.');
 			}
+		  } catch (error) {
+			console.error('Error fetching wishlist: ', error);
+		  }
 		};
-
+	  
 		fetchWishlist();
-	}, []);
+	  }, []);
+	  
+	  
 	const handleRemove = async (index) => {
 		try {
 		  const user = auth.currentUser;
@@ -136,7 +163,9 @@ const WishlistTab = ({ user }) => {
 				<View><Text style={styles.vehicleName}>{vehicle.brand} {vehicle.model}</Text>
 				<Text style={styles.vehiclePrice}>Price: {vehicle.price} CFA/Jour</Text>
 				<TouchableOpacity  style={styles.removeButton}>
-				<Text style={{color:'blue'}}>Availability</Text>
+				<Text style={{ color: 'blue' }}>
+                {vehicle.bookingStatus === 'accepted' ? 'Busy' : 'Available'}
+              </Text>
 				</TouchableOpacity>
 				</View>
 				<View>
