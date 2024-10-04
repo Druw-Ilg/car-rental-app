@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
 	View,
@@ -7,10 +8,11 @@ import {
 	ScrollView
 } from 'react-native';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-const VendorSettings = () => {
+import { SettingsStyle } from '../../Styles';
+
+const VendorSettings = ({ navigation }) => {
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.heading}>Préférences</Text>
 			<View style={styles.section}>
 				<Text style={styles.sectionTitle}>Mon Compte</Text>
 				<TouchableOpacity style={styles.option}>
@@ -37,13 +39,22 @@ const VendorSettings = () => {
 
 			<View style={styles.section}>
 				<Text style={styles.sectionTitle}>À propos</Text>
-				<TouchableOpacity style={styles.option}>
+				<TouchableOpacity
+					style={styles.option}
+					onPress={() => navigation.navigate('Policies')}
+				>
 					<Text style={styles.optionText}>Politique de confidentialité</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.option}>
+				<TouchableOpacity
+					style={styles.option}
+					onPress={() => navigation.navigate('Ts&Cs')}
+				>
 					<Text style={styles.optionText}>Termes & conditions</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.option}>
+				<TouchableOpacity
+					style={styles.option}
+					onPress={() => navigation.navigate('Contact')}
+				>
 					<Text style={styles.optionText}>Contact/Service client</Text>
 				</TouchableOpacity>
 			</View>
@@ -55,61 +66,6 @@ const VendorSettings = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#F5F5F5',
-		padding: 20
-	},
-	heading: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		marginBottom: 20
-	},
-	section: {
-		marginBottom: 30
-	},
-	sectionTitle: {
-		fontSize: 16,
-		fontWeight: 'bold',
-		marginBottom: 10
-	},
-	option: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 15,
-		borderBottomWidth: 1,
-		borderBottomColor: '#E0E0E0'
-	},
-	optionText: {
-		fontSize: 16
-	},
-	optionValue: {
-		fontSize: 16,
-		color: '#666'
-	},
-	arrow: {
-		fontSize: 16,
-		color: '#666'
-	},
-	logoutButton: {
-		backgroundColor: '#E0E0E0',
-		borderRadius: 8,
-		paddingVertical: 15,
-		alignItems: 'center',
-		marginVertical: 30
-	},
-	logoutText: {
-		fontSize: 16,
-		fontWeight: 'bold',
-		color: '#333'
-	},
-	deleteText: {
-		fontSize: 14,
-		color: '#666',
-		textAlign: 'center'
-	}
-});
+const styles = StyleSheet.create(SettingsStyle);
 
 export default VendorSettings;

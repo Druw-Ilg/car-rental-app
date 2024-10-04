@@ -52,17 +52,18 @@ export const AuthProvider = ({ children }) => {
 
 			const querySnapshot = await getDocs(q);
 			const userInfo = querySnapshot.docs[0]?.data();
-			userInfo['uid'] = user.uid; //Add the user id
+			userInfo['uid'] = user.uid; //Add the user id provided by firebase/Auth
 
-			// create user session
+			// create user session with SecureStore
 
 			if (userInfo) {
 				await SecureStore.setItemAsync('user', JSON.stringify(userInfo));
-				setUserData(userInfo);
-				navigation.navigate('Home');
+
+				setUserData(userInfo); // create state variables for AuthContext
+
+				navigation.navigate('UserScreen'); //redirect
 			}
 		} catch (error) {
-			console.error('AuthContext: ', error);
 			return error.message;
 		}
 	};

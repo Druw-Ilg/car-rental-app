@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
 	View,
 	Text,
@@ -26,7 +26,8 @@ const SignUpScreen = ({ navigation }) => {
 	const [isVendor, setIsVendor] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [loading, setLoading] = useState(false);
-	const { login, googleSignIn } = useContext(AuthContext);
+	const { userData, login, googleSignIn } = useContext(AuthContext);
+	const [isLogedIn, setIsLogedIn] = useState(false);
 
 	const toggleSwitch = () => setIsVendor((previousState) => !previousState);
 
@@ -44,14 +45,12 @@ const SignUpScreen = ({ navigation }) => {
 		setLoading(true);
 
 		// Perform login logic based on form input
-		try {
-			const log = await login(email, password, navigation);
-			log == undefined && setErrorMessage('Email ou mot de passe incorrect!');
-		} catch (error) {
-			setErrorMessage('Erreur: ' + error);
-		} finally {
-			setLoading(false); // Hide loader
-		}
+
+		const log = await login(email, password, navigation);
+
+		typeof log === 'string' &&
+			setErrorMessage('Email ou mot de passe incorrect!');
+		setLoading(false); // Hide loader
 	};
 
 	const handleSignUp = async () => {
@@ -83,7 +82,7 @@ const SignUpScreen = ({ navigation }) => {
 				setPassword('');
 
 				const log = await login(email, password, navigation);
-				typeof log == String && setErrorMessage(log);
+				typeof log === 'string' && setErrorMessage(log);
 			}
 		} catch (error) {
 			console.error(error);
@@ -109,9 +108,9 @@ const SignUpScreen = ({ navigation }) => {
 				<View style={styles.container}>
 					<Text style={styles.title}>Se connecter</Text>
 
-					{errorMessage ? (
+					{errorMessage != '' && (
 						<Text style={styles.error}>{errorMessage}</Text>
-					) : null}
+					)}
 
 					<TextInput
 						style={styles.input}

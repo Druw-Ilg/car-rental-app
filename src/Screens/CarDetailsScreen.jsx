@@ -103,7 +103,7 @@ const CarDetailsScreen = ({ route, navigation }) => {
 						style={styles.contactBtn}
 					>
 						<Text style={[styles.txtBtn, { color: '#fff', padding: 3 }]}>
-							Book Now
+							Réserver
 						</Text>
 					</TouchableOpacity>
 				)}

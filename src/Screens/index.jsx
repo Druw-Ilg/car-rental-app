@@ -16,6 +16,9 @@ import VendorSettings from './vendor/VendorSettings';
 import OtherSettings from './OtherSettings';
 import UserSettings from './member/UserSettings';
 import SearchScreen from './SearchScreen';
+import Policies from './Policies';
+import Terms from './Terms';
+import Contact from './Contact';
 
 export {
 	HomeScreen,
@@ -34,5 +37,8 @@ export {
 	VendorSettings,
 	OtherSettings,
 	UserSettings,
-	SearchScreen
+	SearchScreen,
+	Policies,
+	Terms,
+	Contact
 };

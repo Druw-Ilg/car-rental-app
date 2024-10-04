@@ -23,7 +23,10 @@ import {
 	VendorSettings,
 	OtherSettings,
 	UserSettings,
-	SearchScreen
+	SearchScreen,
+	Policies,
+	Terms,
+	Contact
 } from './src/Screens/';
 
 //**** Components *********/
@@ -35,7 +38,7 @@ import UserDrawerContent from './src/components/UserDrawerContent';
 import { AuthProvider, AuthContext } from './src/utils/AuthContext';
 import {
 	AntDesign,
-	MaterialCommunityIcons,
+	Entypo,
 	Ionicons,
 	FontAwesome
 } from 'react-native-vector-icons';
@@ -75,11 +78,7 @@ const MainStack = () => {
 					tabBarShowLabel: false,
 					tabBarIcon: ({ focused }) => {
 						return focused ? (
-							<MaterialCommunityIcons
-								name="home-circle"
-								size={32}
-								color={'rgb(40 52 74)'}
-							/>
+							<Entypo name="home" size={32} color={'rgb(40 52 74)'} />
 						) : (
 							<AntDesign name="home" size={32} color={'#ccc'} />
 						);
@@ -93,11 +92,7 @@ const MainStack = () => {
 					tabBarShowLabel: false,
 					tabBarIcon: ({ focused }) => {
 						return focused ? (
-							<Ionicons
-								name="search-circle"
-								size={32}
-								color={'rgb(40 52 74)'}
-							/>
+							<Ionicons name="search-sharp" size={32} color={'rgb(40 52 74)'} />
 						) : (
 							<Ionicons name="search" size={32} color={'#ccc'} />
 						);
@@ -112,11 +107,7 @@ const MainStack = () => {
 					tabBarShowLabel: false,
 					tabBarIcon: ({ focused }) => {
 						return focused ? (
-							<FontAwesome
-								name="user-circle"
-								size={32}
-								color={'rgb(40 52 74)'}
-							/>
+							<FontAwesome name="user" size={32} color={'rgb(40 52 74)'} />
 						) : (
 							<FontAwesome name="user-o" size={32} color={'#ccc'} />
 						);
@@ -166,14 +157,14 @@ const UserStack = () => {
 			<Stack.Screen
 				name="Tableau de bord"
 				component={VendorDashboard}
-				options={{ headerTitleAlign: 'center', headerTitle: 'Dashboard' }}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Tableau de bord' }}
 			/>
 
 			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
 			<Stack.Screen
 				name="Booking Details"
 				component={BookingDetails}
-				options={{ headerTitleAlign: 'center', headerTitle: 'Booking' }}
+				options={{ headerTitleAlign: 'center', headerTitle: 'Réservations' }}
 			/>
 			<Stack.Screen
 				name="Boosting Details"
@@ -183,21 +174,7 @@ const UserStack = () => {
 					headerTitle: 'Boosting Your List'
 				}}
 			/>
-			<Stack.Screen
-				name="VendorSettings"
-				component={VendorSettings}
-				options={{ headerTitle: '' }}
-			/>
-			<Stack.Screen
-				name="UserSettings"
-				component={UserSettings}
-				options={{ headerTitle: '' }}
-			/>
-			<Stack.Screen
-				name="OtherSettings"
-				component={OtherSettings}
-				options={{ headerShown: false }}
-			/>
+
 			<Stack.Screen
 				name="Profile"
 				component={UserProfileScreen}
@@ -220,6 +197,37 @@ const UserStack = () => {
 				name="Booking Requests"
 				component={BookingRequests}
 				options={{ title: '' }}
+			/>
+
+			<Stack.Screen
+				name="VendorSettings"
+				component={VendorSettings}
+				options={{ headerTitle: 'Préférences' }}
+			/>
+			<Stack.Screen
+				name="UserSettings"
+				component={UserSettings}
+				options={{ headerTitle: 'Préférences' }}
+			/>
+			<Stack.Screen
+				name="OtherSettings"
+				component={OtherSettings}
+				options={{ headerTitle: 'Préférences' }}
+			/>
+			<Stack.Screen
+				name="Policies"
+				component={Policies}
+				options={{ headerTitle: 'Politique de confidentialité' }}
+			/>
+			<Stack.Screen
+				name="Ts&Cs"
+				component={Terms}
+				options={{ headerTitle: 'Termes & conditions' }}
+			/>
+			<Stack.Screen
+				name="Contact"
+				component={Contact}
+				options={{ headerTitle: 'Contact' }}
 			/>
 		</Stack.Navigator>
 	);
