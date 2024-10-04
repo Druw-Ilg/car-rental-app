@@ -42,7 +42,7 @@ const VendorMenu = ({ navigation, handleLinkPress }) => {
 		<>
 			<TouchableOpacity
 				style={styles.link}
-				onPress={() => handleLinkPress('Profile Loueur')}
+				onPress={() => handleLinkPress('Loueur')}
 			>
 				{avatar ? (
 					<View style={{ flexDirection: 'row' }}>

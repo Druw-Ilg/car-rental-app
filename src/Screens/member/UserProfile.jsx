@@ -123,7 +123,7 @@ const ProfileScreen = () => {
 				alertMsg('error', 'Impossible de mettre vos informations à jour!')
 			);
 			setLoading(false);
-			console.error('Error updating profile: ', error);
+			console.error('Mise à jour impossible: ', error);
 		}
 	};
 	const changeAvatar = async () => {

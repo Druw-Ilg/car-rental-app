@@ -14,7 +14,7 @@ import {
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as SecureStore from 'expo-secure-store';
 import FontAwesome from 'react-native-vector-icons/MaterialCommunityIcons';
-import { auth,db, } from '../../../firebase/firebaseConfig';
+import { auth, db } from '../../../firebase/firebaseConfig';
 import {
 	collection,
 	getDoc,
@@ -112,29 +112,38 @@ const WishlistTab = ({ user }) => {
 	const handleRemove = (index) => {
 		// Logic to remove item from wishlist
 		console.log(`Removing vehicle at index: ${index}`);
-	  };
+	};
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-		{vehicleDetails.length > 0 ? (
-		  vehicleDetails.map((vehicle, index) => (
-			<View key={index} style={styles.wishlistItem}>
-			  <Image source={{ uri: vehicle.imageUrls[0] }} style={styles.vehicleImage} />
-			  <View style={styles.vehicleDetails}>
-				<Text style={styles.vehicleName}>{vehicle.brand} {vehicle.model}</Text>
-				<Text style={styles.vehiclePrice}>Price: {vehicle.price} CFA/Jour</Text>
-				<TouchableOpacity onPress={() => handleRemove(index)} style={styles.removeButton}>
-				<FontAwesome name="delete" size={30} color="#000" />
-				</TouchableOpacity>
-			  </View>
-			</View>
-		  ))
-		) : (
-		  <Text style={{ textAlign: 'center' }}>Aucun Favoris</Text>
-		)}
-	  </ScrollView>
+			{vehicleDetails.length > 0 ? (
+				vehicleDetails.map((vehicle, index) => (
+					<View key={index} style={styles.wishlistItem}>
+						<Image
+							source={{ uri: vehicle.imageUrls[0] }}
+							style={styles.vehicleImage}
+						/>
+						<View style={styles.vehicleDetails}>
+							<Text style={styles.vehicleName}>
+								{vehicle.brand} {vehicle.model}
+							</Text>
+							<Text style={styles.vehiclePrice}>
+								Price: {vehicle.price} CFA/Jour
+							</Text>
+							<TouchableOpacity
+								onPress={() => handleRemove(index)}
+								style={styles.removeButton}
+							>
+								<FontAwesome name="delete" size={30} color="#000" />
+							</TouchableOpacity>
+						</View>
+					</View>
+				))
+			) : (
+				<Text style={{ textAlign: 'center' }}>Aucun Favoris</Text>
+			)}
+		</ScrollView>
 	);
 };
-
 
 const UserProfileScreen = () => {
 	const [user, setUser] = useState(null);
@@ -174,51 +183,50 @@ const UserProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
-		container: {
-		  padding: 20,
-		  backgroundColor: '#FFF',
-		},
-		wishlistItem: {
-		  flexDirection: 'row',
-		  alignItems: 'center',
-		  padding: 10,
-		  marginVertical: 5,
-		  borderWidth: 1,
-		  borderColor: '#000',
-		  borderRadius: 10,
-		},
-		vehicleImage: {
-		  width: 100,
-		  height: 100,
-		  borderRadius: 10,
-		  marginRight: 10,
-		  objectFit:'fill',
-		  
-		},
-		vehicleDetails: {
-		  flex: 0.8,
-		},
-		vehicleName: {
-		  fontSize: 18,
-		  fontWeight: 'bold',
-		  marginBottom: 5,
-		},
-		vehiclePrice: {
-		  fontSize: 16,
-		  color: '#888',
-		  marginBottom: 10,
-		},
-		removeButton: {
-		  paddingVertical: 14,
-		  paddingHorizontal: 10,
-		  borderRadius: 8,
-		},
-		removeButtonText: {
-		  color: '#000',
-		  fontSize: 15,
-		  fontWeight:'500'
-		},
-	  
+	container: {
+		padding: 20,
+		backgroundColor: '#FFF'
+	},
+	wishlistItem: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		padding: 10,
+		marginVertical: 5,
+		borderWidth: 1,
+		borderColor: '#000',
+		borderRadius: 10
+	},
+	vehicleImage: {
+		width: 100,
+		height: 100,
+		borderRadius: 10,
+		marginRight: 10,
+		objectFit: 'fill'
+	},
+	vehicleDetails: {
+		flex: 0.8
+	},
+	vehicleName: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		marginBottom: 5
+	},
+	vehiclePrice: {
+		fontSize: 16,
+		color: '#888',
+		marginBottom: 10
+	},
+	removeButton: {
+		paddingVertical: 14,
+		paddingHorizontal: 10,
+		borderRadius: 8
+	},
+	removeButtonText: {
+		color: '#000',
+		fontSize: 15,
+		fontWeight: '500'
+	},
+
 	label: {
 		fontSize: 16,
 		marginBottom: 10
@@ -228,8 +236,7 @@ const styles = StyleSheet.create({
 		borderColor: '#ccc',
 		padding: 10,
 		marginBottom: 20
-	},
-	
+	}
 });
 
 export default UserProfileScreen;

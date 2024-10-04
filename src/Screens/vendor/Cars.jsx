@@ -1,7 +1,13 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react';
-import { Menu, MenuOptions, MenuOption, MenuTrigger, MenuProvider } from 'react-native-popup-menu';
+import {
+	Menu,
+	MenuOptions,
+	MenuOption,
+	MenuTrigger,
+	MenuProvider
+} from 'react-native-popup-menu';
 import {
 	View,
 	Text,
@@ -13,7 +19,6 @@ import {
 	ActivityIndicator,
 	ScrollView,
 	Modal
-	
 } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,16 +33,15 @@ import { Picker } from '@react-native-picker/picker';
 import BoostingList from './BoostingList';
 
 const Cars = () => {
-
 	const [loading, setLoading] = useState(false);
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const openModal = () => {
-	  setModalVisible(true);
+		setModalVisible(true);
 	};
-  
+
 	const closeModal = () => {
-	  setModalVisible(false);
+		setModalVisible(false);
 	};
 
 	const { userData } = useContext(AuthContext);
@@ -48,8 +52,8 @@ const Cars = () => {
 		model: '',
 		year: '',
 		price: '',
-		pickupLocation:'',
-		dropoffLocation:'',
+		pickupLocation: '',
+		dropoffLocation: ''
 	});
 	const [images, setImages] = useState([]);
 	const [isCollapsed, setIsCollapsed] = useState(true);
@@ -130,13 +134,11 @@ const Cars = () => {
 			console.log(error);
 		}
 	};
-   const callBoosting =()=>{
-	return(
-		<BoostingList visible={openModal} onClose={closeModal} />
-	)
-   }
+	const callBoosting = () => {
+		return <BoostingList visible={openModal} onClose={closeModal} />;
+	};
 	const uploadVehicle = async () => {
-		console.log(userData.uid)
+		console.log(userData.uid);
 
 		setLoading(true);
 		if (!vehicleData.type) {
@@ -197,8 +199,8 @@ const Cars = () => {
 								model: '',
 								year: '',
 								price: '',
-								pickupLocation:'',
-								dropoffLocation:'',
+								pickupLocation: '',
+								dropoffLocation: ''
 							});
 							setImages([]);
 							fetchVehicles();
@@ -216,168 +218,177 @@ const Cars = () => {
 		}
 		setLoading(false);
 	};
-	
 
 	return (
 		<ScrollView style={styles.container}>
-		{/* add new vehicle dropdown */}
-		<TouchableOpacity
-			onPress={() => setIsCollapsed(!isCollapsed)}
-			style={[styles.androidShadow, styles.boxShadow]}
-		>
-			<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-				<Text style={styles.subtitle}>Ajouter un véhicule</Text>
+			{/* add new vehicle dropdown */}
+			<TouchableOpacity
+				onPress={() => setIsCollapsed(!isCollapsed)}
+				style={[styles.androidShadow, styles.boxShadow]}
+			>
+				<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+					<Text style={styles.subtitle}>Ajouter un véhicule</Text>
 
-				<Ionicons
-					name="add-outline"
-					size={30}
-					color="#000"
-					style={{ marginTop: 10, marginLeft: 10 }}
-				/>
-			</View>
-		</TouchableOpacity>
-		<Collapsible collapsed={isCollapsed}>
-			<View style={styles.formContainer}>
-				<Picker
-					selectedValue={vehicleData.type}
-					onValueChange={(value) => handleInputChange('type', value)}
-				>
-					<Picker.Item label="Type de véhicule:" enabled={false} />
-					<Picker.Item label="Berline/Sedan" value="Berline/Sedan" />
-					<Picker.Item label="Cross/SUV" value="Cross/SUV" />
-				</Picker>
-
-				<TextInput
-					placeholder="Marque"
-					value={vehicleData.brand}
-					onChangeText={(value) => handleInputChange('brand', value)}
-					style={styles.input}
-				/>
-				<TextInput
-					placeholder="Modèle"
-					value={vehicleData.model}
-					onChangeText={(value) => handleInputChange('model', value)}
-					style={styles.input}
-				/>
-				<TextInput
-					placeholder="Année"
-					value={vehicleData.year}
-					onChangeText={(value) => handleInputChange('year', value)}
-					style={styles.input}
-				/>
-				<TextInput
-					placeholder="Prix/Jour"
-					value={vehicleData.price}
-					onChangeText={(value) => handleInputChange('price', value)}
-					style={styles.input}
-				/>
-				<TextInput
-					placeholder="Abholort"
-					value={vehicleData.pickupLocation}
-					onChangeText={(value) => handleInputChange('pickupLocation', value)}
-					style={styles.input}
-				/>
-				<TextInput
-					placeholder="Abgabeort"
-					value={vehicleData.dropoffLocation}
-					onChangeText={(value) => handleInputChange('dropoffLocation', value)}
-					style={styles.input}
-				/>
-
-				<ScrollView horizontal>
-					{images.map((image, index) => (
-						<Image
-							key={index}
-							source={{ uri: image }}
-							style={styles.imagePreview}
-						/>
-					))}
-				</ScrollView>
-
-				{!images.length > 0 ? (
-					<TouchableOpacity onPress={pickImages} style={styles.formBtn}>
-						<Text style={styles.txtFormBtn}>Image(s) du véhicule</Text>
-					</TouchableOpacity>
-				) : loading ? (
-					<ActivityIndicator
-						size="large"
-						color="#0000ff"
-						style={styles.loader}
+					<Ionicons
+						name="add-outline"
+						size={30}
+						color="#000"
+						style={{ marginTop: 10, marginLeft: 10 }}
 					/>
-				) : (
-					<TouchableOpacity onPress={uploadVehicle} style={styles.formBtn}>
-						<Text style={styles.txtFormBtn}>Enregistrer</Text>
-					</TouchableOpacity>
-				)}
-			</View>
-		</Collapsible>
-		<Text style={styles.subtitle}>Your Vehicles</Text>
-
-		{loading ? (
-			<ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
-		) : vehicles && vehicles.length > 0 ? (
-			<>
-				{/* show vehicles */}
-				{vehicles.map((vehicle) => (
-					<View
-						style={[
-							styles.contentCardWrapper,
-							styles.boxShadow,
-							styles.androidShadow
-						]}
-						key={vehicle.id}
+				</View>
+			</TouchableOpacity>
+			<Collapsible collapsed={isCollapsed}>
+				<View style={styles.formContainer}>
+					<Picker
+						selectedValue={vehicleData.type}
+						onValueChange={(value) => handleInputChange('type', value)}
 					>
-						<Image source={{ uri: vehicle.imageUrls[0] }} style={styles.imageCar}/>
-				
-					 <View style={styles.VehicleDetails}>
-						
-					 <Text style={styles.vehicleName}>
-					 {vehicle.year}  {vehicle.brand} {vehicle.model} 
-						</Text>
-						<Text style={styles.vehiclePrice}>
-							${vehicle.price}/jours
-						</Text>
+						<Picker.Item label="Type de véhicule:" enabled={false} />
+						<Picker.Item label="Berline/Sedan" value="Berline/Sedan" />
+						<Picker.Item label="Cross/SUV" value="Cross/SUV" />
+					</Picker>
 
-						<BoostingList visible={modalVisible} onClose={closeModal} />
-						<Menu >
-							<MenuTrigger style={{backgroundColor:'transparent'}}>
-							
-									<Image
-										source={require('..//..//../assets/more.png')}
-										style={styles.moreIcon}
-									/>
-							</MenuTrigger>
-							<MenuOptions style={styles.OptionsPopup}>
-							<MenuOption onSelect={openModal}>
-        <Text style={styles.menuOptionText}>
+					<TextInput
+						placeholder="Marque"
+						value={vehicleData.brand}
+						onChangeText={(value) => handleInputChange('brand', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Modèle"
+						value={vehicleData.model}
+						onChangeText={(value) => handleInputChange('model', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Année"
+						value={vehicleData.year}
+						onChangeText={(value) => handleInputChange('year', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Prix/Jour"
+						value={vehicleData.price}
+						onChangeText={(value) => handleInputChange('price', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Abholort"
+						value={vehicleData.pickupLocation}
+						onChangeText={(value) => handleInputChange('pickupLocation', value)}
+						style={styles.input}
+					/>
+					<TextInput
+						placeholder="Abgabeort"
+						value={vehicleData.dropoffLocation}
+						onChangeText={(value) =>
+							handleInputChange('dropoffLocation', value)
+						}
+						style={styles.input}
+					/>
+
+					<ScrollView horizontal>
+						{images.map((image, index) => (
+							<Image
+								key={index}
+								source={{ uri: image }}
+								style={styles.imagePreview}
+							/>
+						))}
+					</ScrollView>
+
+					{!images.length > 0 ? (
+						<TouchableOpacity onPress={pickImages} style={styles.formBtn}>
+							<Text style={styles.txtFormBtn}>Image(s) du véhicule</Text>
+						</TouchableOpacity>
+					) : loading ? (
+						<ActivityIndicator
+							size="large"
+							color="#0000ff"
+							style={styles.loader}
+						/>
+					) : (
+						<TouchableOpacity onPress={uploadVehicle} style={styles.formBtn}>
+							<Text style={styles.txtFormBtn}>Enregistrer</Text>
+						</TouchableOpacity>
+					)}
+				</View>
+			</Collapsible>
+			<Text style={styles.subtitle}>Your Vehicles</Text>
+
+			{loading ? (
+				<ActivityIndicator size="large" color="#0000ff" style={styles.loader} />
+			) : vehicles && vehicles.length > 0 ? (
+				<>
+					{/* show vehicles */}
+					{vehicles.map((vehicle) => (
+						<View
+							style={[
+								styles.contentCardWrapper,
+								styles.boxShadow,
+								styles.androidShadow
+							]}
+							key={vehicle.id}
+						>
+							<Image
+								source={{ uri: vehicle.imageUrls[0] }}
+								style={styles.imageCar}
+							/>
+
+							<View style={styles.VehicleDetails}>
+								<Text style={styles.vehicleName}>
+									{vehicle.year} {vehicle.brand} {vehicle.model}
+								</Text>
+								<Text style={styles.vehiclePrice}>
+									{vehicle.price} cfa/jours
+								</Text>
+
+								<BoostingList visible={modalVisible} onClose={closeModal} />
+								<Menu>
+									<MenuTrigger style={{ backgroundColor: 'transparent' }}>
+										<Image
+											source={require('..//..//../assets/more.png')}
+											style={styles.moreIcon}
+										/>
+									</MenuTrigger>
+									<MenuOptions style={styles.OptionsPopup}>
+										{/*<MenuOption onSelect={openModal}>
+											 <Text style={styles.menuOptionText}>
           <Image source={require('..//..//../assets/power.png')} style={styles.popUpIcons} />
           Boost
-        </Text>
-      </MenuOption>
-        <MenuOption onSelect={() => alert('Edit')}>
+        </Text> 
+										</MenuOption>*/}
+										{/* <MenuOption onSelect={() => alert('Edit')}>
             <Text style={styles.menuOptionText}><Image source={require('..//..//../assets/edit.png')} style={styles.popUpIcons}/> Edit</Text>
-        </MenuOption>
-		<MenuOption onSelect={() => alert('Delete')}>
-            <Text style={styles.menuOptionText}><Image source={require('..//..//../assets/delete.png')} style={styles.popUpIcons}/> Delete</Text>
-        </MenuOption>
-    </MenuOptions>
-
-						</Menu>
-					</View>
-					</View>
-				))}
-			</>
-		) : (
-			<Text style={styles.subtitle}>Pas de véhicule pour l'instant...</Text>
-		)}
-	</ScrollView>
+        </MenuOption> */}
+										<MenuOption onSelect={() => alert('Delete')}>
+											<Text style={styles.menuOptionText}>
+												<Image
+													source={require('..//..//../assets/delete.png')}
+													style={styles.popUpIcons}
+												/>{' '}
+												Delete
+											</Text>
+										</MenuOption>
+									</MenuOptions>
+								</Menu>
+							</View>
+						</View>
+					))}
+				</>
+			) : (
+				<Text style={styles.subtitle}>
+					Pas de véhicule pour l&apos;instant...
+				</Text>
+			)}
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-	   backgroundColor:'#fff'
+		backgroundColor: '#fff'
 	},
 	title: {
 		fontSize: 24,
@@ -405,32 +416,29 @@ const styles = StyleSheet.create({
 	},
 	contentCardWrapper: {
 		marginVertical: 20,
-		flex :1,
-		flexDirection:'row'
+		flex: 1,
+		flexDirection: 'row'
 	},
-	imageCar:{
-		width:"50%",
-		height:120,
+	imageCar: {
+		width: '50%',
+		height: 120,
 		borderRadius: 10,
 		marginRight: 10,
-		objectFit:'cover',
+		objectFit: 'cover'
 	},
-	VehicleDetails:{
-		flex:1,
-		paddingHorizontal:3,
-		justifyContent:'space-between'
-
-		
+	VehicleDetails: {
+		flex: 1,
+		paddingHorizontal: 3,
+		justifyContent: 'space-between'
 	},
 	vehicleName: {
 		fontSize: 14,
-		fontWeight: 'bold',
-
-	  },
-	  vehiclePrice: {
+		fontWeight: 'bold'
+	},
+	vehiclePrice: {
 		fontSize: 13,
-		color: '#888',
-	  },
+		color: '#888'
+	},
 	boxShadow: {
 		shadowColor: 'blue',
 		shadowOffset: { width: 6, height: 6 },
@@ -446,38 +454,38 @@ const styles = StyleSheet.create({
 		opacity: 0.2,
 		justifyContent: 'center'
 	},
-	
-    moreIcon: {
-        width: 34,
-        height: 34,
-		alignSelf:'flex-end'
-    },
-     OptionsPopup:{
-		backgroundColor:'#f0f3f7',
-        borderRadius: 8,
-        padding: 10,
-		overflow:'hidden',
-		width:130,
-		justifyContent:'center',
-		position:'absolute',
-		right:10,
-		top:-10
-	 },
-    menuOption: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-    },
-	popUpIcons :{
-               width:20,
-			   height:20
+
+	moreIcon: {
+		width: 34,
+		height: 34,
+		alignSelf: 'flex-end'
 	},
-    menuOptionText: {
+	OptionsPopup: {
+		backgroundColor: '#f0f3f7',
+		borderRadius: 8,
+		padding: 10,
+		overflow: 'hidden',
+		width: 130,
+		justifyContent: 'center',
+		position: 'absolute',
+		right: 10,
+		top: -10
+	},
+	menuOption: {
+		borderBottomWidth: 1,
+		borderBottomColor: '#ddd'
+	},
+	popUpIcons: {
+		width: 20,
+		height: 20
+	},
+	menuOptionText: {
 		backgroundColor: 'transparent', // Transparent background for the blurred view
-        borderRadius: 8,
-        overflow: 'hidden',
-		fontWeight:'lighter',
-		fontSize:13
-    },
+		borderRadius: 8,
+		overflow: 'hidden',
+		fontWeight: 'lighter',
+		fontSize: 13
+	},
 	vehicleImage: {
 		width: 350,
 		height: 250,

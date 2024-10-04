@@ -13,7 +13,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ChartBookings from './ChartBookings';
 import ChartRevenue from './ChartRevenue';
 
-const Analytics = ({ route }) => {
+const Analytics = () => {
 	const { userData } = useContext(AuthContext);
 	const [bookings, setBookings] = useState([]);
 	const [vehicles, setVehicles] = useState([]);
@@ -143,14 +143,15 @@ const Analytics = ({ route }) => {
 
 	return (
 		<ScrollView style={styles.container}>
-			<Text style={styles.heading}>How you're doing</Text>
+			<Text style={styles.heading}>Vos performances</Text>
 
 			{bookings.length > 0 && (
 				<View style={styles.section}>
-					<Text style={styles.label}>Bookings</Text>
+					<Text style={styles.label}>Réservations</Text>
 					<Text style={styles.value}>{bookings.length}</Text>
+					{/* Show progession percentage for the last 3 months */}
 					<Text style={styles.subtext}>
-						Last 3 months <Text style={styles.greenText}>+15%</Text>
+						Last 3 months <Text style={styles.greenText}></Text>
 					</Text>
 					<ChartBookings />
 				</View>
@@ -158,29 +159,39 @@ const Analytics = ({ route }) => {
 
 			<View style={styles.section}>
 				<Text style={styles.label}>Revenue</Text>
-				<Text style={styles.value}>${revenue}</Text>
+				<Text style={styles.value}>{revenue} CFA</Text>
+				{/* Show progession percentage for the last 3 months */}
 				<Text style={styles.subtext}>
-					Last 3 months <Text style={styles.greenText}>+20%</Text>
+					Last 3 months <Text style={styles.greenText}></Text>
 				</Text>
 				<ChartRevenue />
 				<View style={styles.cardContainer}>
 					<View style={styles.cardRow}>
 						<View style={styles.card}>
-							<Text style={styles.labelCards}>Cars listed</Text>
+							{/* Car listed */}
+							<Text style={styles.labelCards}>Vos véhicules</Text>
 							<Text style={styles.valueCards}>{vehicles.length}</Text>
 						</View>
 						<View style={styles.card}>
-							<Text style={styles.labelCards}>Most rented car type</Text>
+							{/* Most rented car type */}
+							<Text style={styles.labelCards}>
+								Type de véhicule le plus loué
+							</Text>
 							<Text style={styles.valueCards}>{mostRentedCarType}</Text>
 						</View>
 					</View>
 					<View style={styles.cardRow}>
 						<View style={styles.card}>
-							<Text style={styles.labelCards}>Average trip length</Text>
-							<Text style={styles.valueCards}>{averageTripLength}{bookings.length}/days</Text>
+							{/* Average number of trip requests */}
+							<Text style={styles.labelCards}>Nombre moyen de demandes</Text>
+							<Text style={styles.valueCards}>
+								{averageTripLength}
+								{bookings.length}/jour
+							</Text>
 						</View>
 						<View style={styles.card}>
-							<Text style={styles.labelCards}>Total Bookings</Text>
+							{/* Total Bookings */}
+							<Text style={styles.labelCards}>Réservations totales</Text>
 							<Text style={styles.valueCards}>{bookings.length}</Text>
 						</View>
 					</View>
@@ -238,7 +249,6 @@ const styles = StyleSheet.create({
 	card: {
 		flex: 1,
 		padding: 20,
-		borderRadius: 10,
 		margin: 10,
 		alignItems: 'center',
 		borderRadius: 18,

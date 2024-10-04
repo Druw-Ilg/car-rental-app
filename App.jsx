@@ -160,7 +160,7 @@ const UserStack = () => {
 				options={{ headerTitleAlign: 'center', headerTitle: 'Tableau de bord' }}
 			/>
 
-			<Stack.Screen name="Profile Loueur" component={VendorProfileScreen} />
+			<Stack.Screen name="Loueur" component={VendorProfileScreen} />
 			<Stack.Screen
 				name="Booking Details"
 				component={BookingDetails}

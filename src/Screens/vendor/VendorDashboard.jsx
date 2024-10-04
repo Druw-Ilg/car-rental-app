@@ -62,10 +62,10 @@ const VendorDashboard = () => {
 
 	return (
 		<Tab.Navigator style={{ backgroundColor: '#fff' }}>
-			<Tab.Screen name="Cars" component={Cars} />
-			<Tab.Screen name="Bookings" component={BookingRequests} />
+			<Tab.Screen name="Véhicules" component={Cars} />
+			<Tab.Screen name="Réservations" component={BookingRequests} />
 			<Tab.Screen
-				name="Analytics"
+				name="Stats"
 				component={Analytics}
 				initialParams={{ firstBookingDate, lastBookingDate }}
 			/>
